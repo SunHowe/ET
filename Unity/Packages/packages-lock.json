@@ -14,6 +14,13 @@
       "dependencies": {},
       "hash": "2554e81f0315ddf835026940ccc4ba8175edfda3"
     },
+    "com.howegame.fariygui.dynamic": {
+      "version": "https://github.com/SunHowe/FairyGUI-Dynamic.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b3ae3fc24c062bc97f6b035f690bd517ff5ca6b1"
+    },
     "com.tuyoogame.yooasset": {
       "version": "2.1.1",
       "depth": 0,

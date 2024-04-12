@@ -10,7 +10,9 @@
         "Unity.Model",
         "Unity.Hotfix",
         "Unity.ModelView",
-        "YooAsset"
+        "YooAsset",
+        "FairyGUI",
+        "FairyGUI.Dyanmic"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

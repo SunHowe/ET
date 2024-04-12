@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using FairyGUI;
 
 namespace ET.Client
@@ -12,18 +13,18 @@ namespace ET.Client
         {
             self.Name = name;
             self.Depth = depth;
-            
+
             GRoot groot = GRoot.inst;
-            
+
             self.ContentPane = new GComponent();
             self.ContentPane.size = groot.size;
             self.ContentPane.Center(true);
             self.ContentPane.AddRelation(groot, RelationType.Size);
             self.ContentPane.sortingOrder = depth + 1;
-            
+
             groot.AddChild(self.ContentPane);
         }
-        
+
         /// <summary>
         /// 获取分组中的当前UI(栈顶)
         /// </summary>
@@ -31,15 +32,15 @@ namespace ET.Client
         {
             return self.UIs.First?.Value?.UI;
         }
-        
+
         /// <summary>
         /// 添加UI到分组
         /// </summary>
         public static void AddUI(this FUIGroup self, FUI ui)
         {
-            self.UIs.AddFirst(self.CreateUIInfo(ui));
+            self.UIs.AddFirst(CreateUIInfo(ui));
         }
-        
+
         /// <summary>
         /// 移除分组中的UI
         /// </summary>
@@ -54,15 +55,15 @@ namespace ET.Client
             if (!info.Covered)
             {
                 info.Covered = true;
-                ui.EventHandler.OnCover(ui);
+                ui.OnCover();
             }
-            
+
             if (!info.Paused)
             {
                 info.Paused = true;
-                ui.EventHandler.OnPause(ui);
+                ui.OnPause();
             }
-            
+
             if (self.CacheNode != null && self.CacheNode.Value == info)
             {
                 self.CacheNode = self.CacheNode.Next;
@@ -72,7 +73,7 @@ namespace ET.Client
             {
                 return;
             }
-            
+
             ObjectPool.Instance.Recycle(info);
         }
 
@@ -86,7 +87,7 @@ namespace ET.Client
             {
                 return;
             }
-            
+
             self.UIs.Remove(info);
             self.UIs.AddFirst(info);
         }
@@ -96,9 +97,107 @@ namespace ET.Client
         /// </summary>
         public static void Refresh(this FUIGroup self)
         {
-            
+            LinkedListNode<FUIInfo> current = self.UIs.First;
+            bool pause = false;
+            bool cover = false;
+            int depth = self.UIs.Count;
+            FUIInfo maskLayerFUIInfo = null;
+
+            while (current != null && current.Value != null)
+            {
+                LinkedListNode<FUIInfo> next = current.Next;
+                current.Value.UI.SetDepth(depth);
+                if (current.Value == null)
+                {
+                    return;
+                }
+
+                if (pause)
+                {
+                    if (!current.Value.Covered)
+                    {
+                        current.Value.Covered = true;
+                        current.Value.UI.OnCover();
+                        if (current.Value == null)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (!current.Value.Paused)
+                    {
+                        current.Value.Paused = true;
+                        current.Value.UI.OnPause();
+                        if (current.Value == null)
+                        {
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if (current.Value.Paused)
+                    {
+                        current.Value.Paused = false;
+                        current.Value.UI.OnResume();
+                        if (current.Value == null)
+                        {
+                            return;
+                        }
+                    }
+
+                    if (current.Value.UI.IsPauseCoveredUIForm())
+                    {
+                        pause = true;
+                    }
+
+                    if (cover)
+                    {
+                        if (!current.Value.Covered)
+                        {
+                            current.Value.Covered = true;
+                            current.Value.UI.OnCover();
+                            if (current.Value == null)
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (current.Value.Covered)
+                        {
+                            current.Value.Covered = false;
+                            current.Value.UI.OnReveal();
+                            if (current.Value == null)
+                            {
+                                return;
+                            }
+                        }
+
+                        cover = true;
+                    }
+
+                    if (maskLayerFUIInfo == null && current.Value.UI.IsNeedDisplayMaskLayer())
+                    {
+                        maskLayerFUIInfo = current.Value;
+                    }
+                }
+
+                current = next;
+            }
+
+            self.SetMaskLayerBelongTo(maskLayerFUIInfo);
         }
         
+        /// <summary>
+        /// 设置遮罩层归属
+        /// </summary>
+        private static void SetMaskLayerBelongTo(this FUIGroup self, FUIInfo ui)
+        {
+            // TODO
+        }
+
         /// <summary>
         /// 获取UI信息
         /// </summary>
@@ -110,7 +209,7 @@ namespace ET.Client
         /// <summary>
         /// 创建UI信息
         /// </summary>
-        private static FUIInfo CreateUIInfo(this FUIGroup self, FUI ui)
+        private static FUIInfo CreateUIInfo(FUI ui)
         {
             FUIInfo info = ObjectPool.Instance.Fetch<FUIInfo>();
             info.UI = ui;

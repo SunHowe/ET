@@ -6,6 +6,16 @@
     public interface IFUIEventHandler
     {
         /// <summary>
+        /// 是否需要暂停覆盖的界面
+        /// </summary>
+        bool IsPauseCoveredUIForm(FUI ui);
+        
+        /// <summary>
+        /// 是否需要显示遮罩层
+        /// </summary>
+        bool IsNeedDisplayMaskLayer(FUI ui);
+        
+        /// <summary>
         /// 界面创建时调用
         /// </summary>
         void OnCreate(FUI ui);
@@ -48,6 +58,16 @@
     
     public abstract class AFUIEventHandler<T> : IFUIEventHandler where T : Entity
     {
+        public bool IsPauseCoveredUIForm(FUI ui)
+        {
+            return IsPauseCoveredUIForm(ui, ui.GetComponent<T>());
+        }
+
+        public bool IsNeedDisplayMaskLayer(FUI ui)
+        {
+            return IsNeedDisplayMaskLayer(ui, ui.GetComponent<T>());
+        }
+
         public void OnCreate(FUI ui)
         {
             OnCreate(ui, ui.GetComponent<T>());
@@ -85,6 +105,9 @@
         
         // 这里因为有的界面可能不需要轮询 无用的轮询查询组件会带来额外开销
         public abstract void OnUpdate(FUI ui);
+        
+        protected abstract bool IsPauseCoveredUIForm(FUI ui, T component);
+        protected abstract bool IsNeedDisplayMaskLayer(FUI ui, T component);
         
         protected abstract void OnCreate(FUI ui, T component);
         protected abstract void OnDestroy(FUI ui, T component);

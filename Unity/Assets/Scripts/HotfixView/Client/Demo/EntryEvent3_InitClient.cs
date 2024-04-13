@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using FairyGUI;
 
 namespace ET.Client
 {
@@ -14,6 +15,8 @@ namespace ET.Client
             root.AddComponent<FUIComponent, string, string>("Assets/Bundles/FUI/", "Assets/Bundles/FUI/UIPackageMapping.asset");
             root.AddComponent<PlayerComponent>();
             root.AddComponent<CurrentScenesComponent>();
+            root.AddComponent<ScreenAdaptorComponent>();
+            root.AddComponent<FUIScreenAdaptorComponent, UIContentScaler.ScreenMatchMode, int, int>(UIContentScaler.ScreenMatchMode.MatchWidthOrHeight, 1280, 720);
             
             // 根据配置修改掉Main Fiber的SceneType
             SceneType sceneType = EnumHelper.FromString<SceneType>(globalComponent.GlobalConfig.AppType.ToString());

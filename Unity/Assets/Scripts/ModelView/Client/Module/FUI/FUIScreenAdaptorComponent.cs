@@ -7,7 +7,7 @@ namespace ET.Client
     /// FUI 屏幕适配组件
     /// </summary>
     [ComponentOf(typeof(Scene))]
-    public sealed class FUIScreenAdaptorComponent : Entity, IAwake<UIContentScaler.ScreenMatchMode, int, int>
+    public sealed class FUIScreenAdaptorComponent : Entity, IAwake<UIContentScaler.ScreenMatchMode, int, int>, IDestroy
     {
         public UIContentScaler.ScreenMatchMode ScreenMatchMode { get; set; }
         public int DesignResolutionX { get; set; }

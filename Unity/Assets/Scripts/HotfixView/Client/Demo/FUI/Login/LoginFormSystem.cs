@@ -6,6 +6,8 @@ namespace ET.Client
     {
         private static void OnCreate(this LoginForm self, FUI ui, GComponent contentPane)
         {
+            ui.AddComponent<FUIFullScreenComponent>();
+            
             self.BtnLogin.onClick.Add(self.OnLogin);
         }
         

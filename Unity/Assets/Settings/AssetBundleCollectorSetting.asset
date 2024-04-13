@@ -123,3 +123,11 @@ MonoBehaviour:
         FilterRuleName: CollectSprite
         AssetTags: 
         UserData: 
+      - CollectPath: Assets/Bundles/FUI/UIPackageMapping.asset
+        CollectorGUID: 75cb25fbfa19a064980a61c965722b28
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackSeparately
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 

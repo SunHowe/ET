@@ -4,9 +4,10 @@ using FairyGUI.Dynamic;
 namespace ET.Client
 {
     [ComponentOf(typeof(Scene))]
-    public sealed class FUIComponent : Entity, IAwake<string>, IDestroy
+    public sealed class FUIComponent : Entity, IAwake<string, string>, IDestroy
     {
         public string UIAssetKeyPrefix { get; set; }
+        public string UIMappingAssetKey { get; set; }
         
         public Dictionary<string, FUIGroup> UIGroups = new();
         public Dictionary<FUIViewId, IFUIEventHandler> EventHandlers = new();
@@ -15,6 +16,7 @@ namespace ET.Client
         
         public IUIAssetManagerConfiguration UIAssetManagerConfiguration { get; set; }
         public IUIAssetManager UIAssetManager { get; set; }
+        public IUIPackageHelper UIPackageHelper { get; set; }
         
         public List<FUI> UIBuffer = new();
     }

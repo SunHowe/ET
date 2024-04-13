@@ -10,7 +10,7 @@ namespace ET.Client
     public static partial class FUIComponentSystem
     {
         [EntitySystem]
-        private static void Awake(this FUIComponent self, string uiAssetKeyPrefix)
+        private static void Awake(this FUIComponent self, string uiAssetKeyPrefix, string uiMappingAssetKey)
         {
             var uiEvents = CodeTypes.Instance.GetTypes(typeof(FUIEventAttribute));
             foreach (Type type in uiEvents)
@@ -27,15 +27,15 @@ namespace ET.Client
             }
             
             self.UIAssetKeyPrefix = uiAssetKeyPrefix;
-            self.UIAssetManagerConfiguration = new FUIAssetManagerConfiguration(self);
-
-            self.UIAssetManager = new UIAssetManager();
-            self.UIAssetManager.Initialize(self.UIAssetManagerConfiguration);
+            self.UIMappingAssetKey = uiMappingAssetKey;
         }
 
         [EntitySystem]
         private static void Destroy(this FUIComponent self)
         {
+            if (self.UIAssetManager == null)
+                return;
+            
             foreach (FUIGroup uiGroup in self.UIGroups.Values)
             {
                 uiGroup.Dispose();
@@ -43,6 +43,19 @@ namespace ET.Client
 
             self.UIGroups.Clear();
             self.UIAssetManager.Dispose();
+        }
+
+        /// <summary>
+        /// 初始化UI组件
+        /// </summary>
+        public static async ETTask InitializeAsync(this FUIComponent self)
+        {
+            ResourcesLoaderComponent resourcesLoaderComponent = self.Root().GetComponent<ResourcesLoaderComponent>();
+            self.UIPackageHelper = await resourcesLoaderComponent.LoadAssetAsync<UIPackageMapping>(self.UIMappingAssetKey);
+            self.UIAssetManagerConfiguration = new FUIAssetManagerConfiguration(self);
+
+            self.UIAssetManager = new UIAssetManager();
+            self.UIAssetManager.Initialize(self.UIAssetManagerConfiguration);
         }
 
         /// <summary>

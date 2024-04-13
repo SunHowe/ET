@@ -30,15 +30,15 @@ namespace ET.Client
         /// </summary>
         private string GetPackageAssetKey(string packageName)
         {
-            return $"{m_AssetKeyPrefix}{packageName}_fui";
+            return $"{m_AssetKeyPrefix}{packageName}_fui.bytes";
         }
 
         /// <summary>
         /// 获取包内资源键值
         /// </summary>
-        private string GetResAssetKey(string packageName, string assetName)
+        private string GetResAssetKey(string packageName, string assetName, string extension)
         {
-            return $"{m_AssetKeyPrefix}{packageName}_{assetName}";
+            return $"{m_AssetKeyPrefix}{packageName}_{assetName}{extension}";
         }
         
         public void LoadUIPackageBytesAsync(string packageName, LoadUIPackageBytesCallback callback)
@@ -65,7 +65,7 @@ namespace ET.Client
         
         private async ETTask InnerLoadTextureAsync(string packageName, string assetName, string extension, LoadTextureCallback callback)
         {
-            Texture texture = await GetResourcesLoaderComponent().LoadAssetAsync<Texture>(GetResAssetKey(packageName, assetName));
+            Texture texture = await GetResourcesLoaderComponent().LoadAssetAsync<Texture>(GetResAssetKey(packageName, assetName, extension));
             callback?.Invoke(texture);
         }
 
@@ -82,7 +82,7 @@ namespace ET.Client
         
         private async ETTask InnerLoadAudioClipAsync(string packageName, string assetName, string extension, LoadAudioClipCallback callback)
         {
-            AudioClip audioClip = await GetResourcesLoaderComponent().LoadAssetAsync<AudioClip>(GetResAssetKey(packageName, assetName));
+            AudioClip audioClip = await GetResourcesLoaderComponent().LoadAssetAsync<AudioClip>(GetResAssetKey(packageName, assetName, extension));
             callback?.Invoke(audioClip);
         }
 

@@ -13,7 +13,7 @@ namespace ET.Client
 
         public FUIAssetManagerConfiguration(FUIComponent fuiComponent)
         {
-            PackageHelper = new FUIPackageHelper(fuiComponent);
+            PackageHelper = fuiComponent.UIPackageHelper;
             AssetLoader = new FUIAssetLoader(fuiComponent);
         }
     }

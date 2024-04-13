@@ -48,14 +48,15 @@ namespace ET.Client
 
         private async ETTask InnerLoadUIPackageBytesAsync(string packageName, LoadUIPackageBytesCallback callback)
         {
-            byte[] bytes = await GetResourcesLoaderComponent().LoadRawAsync(GetPackageAssetKey(packageName));
-            callback?.Invoke(bytes, string.Empty);
+            TextAsset asset = await GetResourcesLoaderComponent().LoadAssetAsync<TextAsset>(GetPackageAssetKey(packageName));
+            callback?.Invoke(asset != null ? asset.bytes : null, string.Empty);
         }
 
         public void LoadUIPackageBytes(string packageName, out byte[] bytes, out string assetNamePrefix)
         {
-            bytes = GetResourcesLoaderComponent().LoadRawSync(GetPackageAssetKey(packageName));
+            TextAsset asset = GetResourcesLoaderComponent().LoadAssetSync<TextAsset>(GetPackageAssetKey(packageName));
             assetNamePrefix = string.Empty;
+            bytes = asset != null ? asset.bytes : null;
         }
 
         public void LoadTextureAsync(string packageName, string assetName, string extension, LoadTextureCallback callback)

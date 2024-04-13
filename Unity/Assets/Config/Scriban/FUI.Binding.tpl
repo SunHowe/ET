@@ -11,7 +11,7 @@ using FairyGUI;
 namespace ET.Client
 {
     [ComponentOf(typeof(FUI))]
-    public partial class {{ name }} : Entity, IAwake<GComponent>
+    public partial class {{ name }} : Entity, IAwake, IDestroy
     {
         public const string URL = "{{ url }}";
 

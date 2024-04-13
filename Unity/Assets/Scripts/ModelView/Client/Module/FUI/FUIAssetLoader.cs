@@ -6,7 +6,7 @@ namespace ET.Client
     /// <summary>
     /// FUI资源加载器
     /// </summary>
-    public sealed class FUIAssetLoader : IUIAssetLoader
+    public sealed class FUIAssetLoader : HandlerObject, IUIAssetLoader
     {
         private readonly FUIComponent m_FUIComponent;
         private readonly string m_AssetKeyPrefix;

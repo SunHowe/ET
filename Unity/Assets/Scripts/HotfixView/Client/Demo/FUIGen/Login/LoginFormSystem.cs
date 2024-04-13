@@ -14,9 +14,12 @@ namespace ET.Client
     [FriendOf(typeof(LoginForm))]
     public static partial class LoginFormSystem
     {
-        [EntitySystem]
-        public static void Awake(this LoginForm self, GComponent contentPane)
+		[EntitySystem]
+        public static void Awake(this LoginForm self)
         {
+            FUI fui = self.GetParent<FUI>();
+            GComponent contentPane = fui.ContentPane;
+
             #region [子节点]
      
             self.BtnLogin = (FairyGUI.GButton)contentPane.GetChild("btnLogin");
@@ -34,6 +37,14 @@ namespace ET.Client
             #region [动效]
 
             #endregion
+
+            self.OnCreate(fui, contentPane);
+        }
+
+        [EntitySystem]
+        public static void Destroy(this LoginForm self)
+        {
+            self.OnDestroy();
         }
     }
 }

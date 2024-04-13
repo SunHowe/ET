@@ -11,7 +11,7 @@ using FairyGUI;
 namespace ET.Client
 {
     [ComponentOf(typeof(FUI))]
-    public partial class LoginForm : Entity, IAwake<GComponent>
+    public partial class LoginForm : Entity, IAwake, IDestroy
     {
         public const string URL = "ui://gb2fsa1xdrq90";
 

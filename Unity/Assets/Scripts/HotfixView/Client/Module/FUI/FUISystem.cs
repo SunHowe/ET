@@ -13,13 +13,11 @@ namespace ET.Client
             self.ContentPane = contentPane;
             self.EventHandler = eventHandler;
             self.AddComponent(eventHandler.ComponentType);
-            self.OnCreate();
         }
 
         [EntitySystem]
         private static void Destroy(this FUI self)
         {
-            self.OnDestroy();
             self.ContentPane.Dispose();
         }
 
@@ -29,38 +27,6 @@ namespace ET.Client
         public static void SetDepth(this FUI self, int depth)
         {
             self.ContentPane.sortingOrder = depth + 1;
-        }
-
-        /// <summary>
-        /// 是否需要暂停覆盖的界面
-        /// </summary>
-        public static bool IsPauseCoveredUIForm(this FUI ui)
-        {
-            return ui.EventHandler.IsPauseCoveredUIForm(ui);
-        }
-
-        /// <summary>
-        /// 是否需要显示遮罩层
-        /// </summary>
-        public static bool IsNeedDisplayMaskLayer(this FUI ui)
-        {
-            return ui.EventHandler.IsNeedDisplayMaskLayer(ui);
-        }
-
-        /// <summary>
-        /// 界面创建时调用
-        /// </summary>
-        public static void OnCreate(this FUI self)
-        {
-            self.EventHandler.OnCreate(self);
-        }
-
-        /// <summary>
-        /// 界面销毁时调用
-        /// </summary>
-        public static void OnDestroy(this FUI self)
-        {
-            self.EventHandler.OnDestroy(self);
         }
 
         /// <summary>
@@ -117,14 +83,6 @@ namespace ET.Client
         public static void OnRefocus(this FUI self, object userdata)
         {
             self.EventHandler.OnRefocus(self, userdata);
-        }
-
-        /// <summary>
-        /// 界面轮询
-        /// </summary>
-        public static void OnUpdate(this FUI self)
-        {
-            self.EventHandler.OnUpdate(self);
         }
     }
 }

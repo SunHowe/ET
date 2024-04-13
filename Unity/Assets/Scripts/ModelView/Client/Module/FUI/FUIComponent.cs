@@ -9,15 +9,13 @@ namespace ET.Client
         public string UIAssetKeyPrefix { get; set; }
         public string UIMappingAssetKey { get; set; }
         
-        public Dictionary<FUIGroupId, FUIGroup> UIGroups = new();
+        public Dictionary<FUIGroupId, EntityRef<FUIGroup>> UIGroups = new();
         public Dictionary<FUIViewId, IFUIEventHandler> EventHandlers = new();
-        public Dictionary<FUIViewId, FUI> UIDict = new();
+        public Dictionary<FUIViewId, EntityRef<FUI>> UIDict = new();
         public Dictionary<FUIViewId, ETCancellationToken> UIAwaitDict = new();
         
-        public IUIAssetManagerConfiguration UIAssetManagerConfiguration { get; set; }
         public IUIAssetManager UIAssetManager { get; set; }
-        public IUIPackageHelper UIPackageHelper { get; set; }
         
-        public List<FUI> UIBuffer = new();
+        public List<EntityRef<FUI>> UIBuffer = new();
     }
 }

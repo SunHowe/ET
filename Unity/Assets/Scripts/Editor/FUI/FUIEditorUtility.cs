@@ -26,9 +26,9 @@ namespace ET
 
             private const string ScribanTemplateRoot = "Assets/Config/Scriban";
             
-            private const string FUIGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
-            private const string FUISystemGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
-            private const string FUIEventHandlerGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
+            private const string FUIBindingGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
+            private const string FUISystemBindingGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
+            private const string FUISystemLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
             private const string FUIEnumFilePath = "Assets/Scripts/ModelView/Client/Module/FUI/FUIViewId.cs";
 
             private const string UINamespace = "ET.Client";
@@ -69,41 +69,39 @@ namespace ET
             public static void GenerateCode()
             {
                 UIComponentFilter filter = new UIComponentFilter();
-                
-                if (!Directory.Exists(FUIEventHandlerGenerateRoot))
-                    Directory.CreateDirectory(FUIEventHandlerGenerateRoot);
 
-                #region [生成FUI代码]
+                #region [生成FUI绑定代码]
 
                 // 每次都删除重建
-                if (Directory.Exists(FUIGenerateRoot))
-                    Directory.Delete(FUIGenerateRoot, true);
+                if (Directory.Exists(FUIBindingGenerateRoot))
+                    Directory.Delete(FUIBindingGenerateRoot, true);
 
-                Directory.CreateDirectory(FUIGenerateRoot);
+                Directory.CreateDirectory(FUIBindingGenerateRoot);
                 
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICodeExportSettings), filter);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIBindingCodeExportSettings), filter);
 
                 #endregion
 
-                #region [生成FUISystem代码]
+                #region [生成FUISystem绑定代码与FUIEventHandler绑定代码]
 
                 // 每次都删除重建
-                if (Directory.Exists(FUISystemGenerateRoot))
-                    Directory.Delete(FUISystemGenerateRoot, true);
+                if (Directory.Exists(FUISystemBindingGenerateRoot))
+                    Directory.Delete(FUISystemBindingGenerateRoot, true);
+
+                Directory.CreateDirectory(FUISystemBindingGenerateRoot);
                 
-                Directory.CreateDirectory(FUISystemGenerateRoot);
-                
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUISystemCodeExportSettings), filter);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUISystemBindingCodeExportSettings), filter);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetEventHandlerBindingCodeExportSettings), filter);
 
                 #endregion
 
-                #region [生成FUIEventHandler代码]
+                #region [生成FUISystem逻辑代码]
 
-                // 这个目录下的代码不会被删除 只会新增
-                if (!Directory.Exists(FUIEventHandlerGenerateRoot))
-                    Directory.CreateDirectory(FUIEventHandlerGenerateRoot);
-
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetEventHandlerCodeExportSettings), filter);
+                // 只生成一次
+                if (!Directory.Exists(FUISystemLogicGenerateRoot))
+                    Directory.CreateDirectory(FUISystemLogicGenerateRoot);
+                
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUISystemLogicCodeExportSettings), filter);
 
                 #endregion
 
@@ -134,7 +132,7 @@ namespace ET
                 }
             }
 
-            private static bool GetFUICodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUIBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
@@ -144,12 +142,12 @@ namespace ET
                     return false;
                 
                 // 只生成UIForm代码
-                templatePath = ScribanTemplateRoot + "/FUI.tpl";
-                outputPath = FUIGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                templatePath = ScribanTemplateRoot + "/FUI.Binding.tpl";
+                outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
                 return true;
             }
 
-            private static bool GetFUISystemCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUISystemBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
@@ -159,12 +157,12 @@ namespace ET
                     return false;
                 
                 // 只生成UIFormSystem代码
-                templatePath = ScribanTemplateRoot + "/FUISystem.tpl";
-                outputPath = FUISystemGenerateRoot + "/" + component.PackageName + "/" + component.Name + "System.cs";
+                templatePath = ScribanTemplateRoot + "/FUISystem.Binding.tpl";
+                outputPath = FUISystemBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + "System.cs";
                 return true;
             }
 
-            private static bool GetEventHandlerCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetEventHandlerBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
@@ -174,14 +172,29 @@ namespace ET
                     return false;
                 
                 // 只生成EventHandler代码
-                outputPath = FUIEventHandlerGenerateRoot + "/" + component.PackageName + "/" + component.Name + "EventHandler.cs";
+                outputPath = FUISystemBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + "EventHandler.cs";
+                templatePath = ScribanTemplateRoot + "/FUIEventHandler.Binding.tpl";
+                
+                return true;
+            }
+
+            private static bool GetFUISystemLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            {
+                templatePath = string.Empty;
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIForm)
+                    return false;
+                
+                // 只生成UIFormSystem代码
+                outputPath = FUISystemLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + "System.cs";
                 
                 // 如果已经存在，则不再生成
                 if (File.Exists(outputPath))
                     return false;
                 
-                templatePath = ScribanTemplateRoot + "/FUIEventHandler.tpl";
-                
+                templatePath = ScribanTemplateRoot + "/FUISystem.tpl";
                 return true;
             }
 

@@ -9,10 +9,9 @@ namespace ET.Client
     public static partial class FUIGroupSystem
     {
         [EntitySystem]
-        public static void Awake(this FUIGroup self, FUIGroupId groupId, int depth)
+        public static void Awake(this FUIGroup self, FUIGroupId groupId)
         {
             self.GroupId = groupId;
-            self.Depth = depth;
 
             GRoot groot = GRoot.inst;
 
@@ -21,7 +20,7 @@ namespace ET.Client
             self.ContentPane.size = groot.size;
             self.ContentPane.Center(true);
             self.ContentPane.AddRelation(groot, RelationType.Size);
-            self.ContentPane.sortingOrder = depth + 1;
+            self.ContentPane.sortingOrder = (int)(groupId + 1);
 
             groot.AddChild(self.ContentPane);
         }
@@ -39,7 +38,7 @@ namespace ET.Client
         /// </summary>
         public static bool HasUI(this FUIGroup self, FUI ui)
         {
-            return self.UIs.Any(info => info.UI == ui);
+            return self.UIs.Any(info => (FUI)info.UI == ui);
         }
         
         /// <summary>
@@ -47,7 +46,7 @@ namespace ET.Client
         /// </summary>
         public static bool HasUI(this FUIGroup self, FUIViewId viewId)
         {
-            return self.UIs.Any(info => info.UI.ViewId == viewId);
+            return self.UIs.Any(info => ((FUI)info.UI).ViewId == viewId);
         }
 
         /// <summary>
@@ -64,13 +63,13 @@ namespace ET.Client
         /// </summary>
         public static FUI GetUI(this FUIGroup self, FUIViewId viewId)
         {
-            return self.UIs.FirstOrDefault(info => info.UI.ViewId == viewId)?.UI;
+            return self.UIs.FirstOrDefault(info => ((FUI)info.UI).ViewId == viewId)?.UI;
         }
 
         /// <summary>
         /// 获取分组中的所有UI
         /// </summary>
-        public static int GetUIList(this FUIGroup self, List<FUI> buffer)
+        public static int GetUIList(this FUIGroup self, List<EntityRef<FUI>> buffer)
         {
             buffer.Clear();
             buffer.AddRange(self.UIs.Select(info => info.UI));
@@ -143,28 +142,36 @@ namespace ET.Client
             while (current != null && current.Value != null)
             {
                 LinkedListNode<FUIInfo> next = current.Next;
-                current.Value.UI.SetDepth(depth);
-                if (current.Value == null)
+                FUIInfo fuiInfo = current.Value;
+                if (fuiInfo == null)
                 {
                     return;
                 }
+                
+                FUI fui = fuiInfo.UI;
+                if (fui == null)
+                {
+                    continue;
+                }
+                
+                fui.SetDepth(depth);
 
                 if (pause)
                 {
-                    if (!current.Value.Covered)
+                    if (!fuiInfo.Covered)
                     {
-                        current.Value.Covered = true;
-                        current.Value.UI.OnCover();
+                        fuiInfo.Covered = true;
+                        fui.OnCover();
                         if (current.Value == null)
                         {
                             return;
                         }
                     }
 
-                    if (!current.Value.Paused)
+                    if (!fuiInfo.Paused)
                     {
-                        current.Value.Paused = true;
-                        current.Value.UI.OnPause();
+                        fuiInfo.Paused = true;
+                        fui.OnPause();
                         if (current.Value == null)
                         {
                             return;
@@ -173,27 +180,27 @@ namespace ET.Client
                 }
                 else
                 {
-                    if (current.Value.Paused)
+                    if (fuiInfo.Paused)
                     {
-                        current.Value.Paused = false;
-                        current.Value.UI.OnResume();
+                        fuiInfo.Paused = false;
+                        fui.OnResume();
                         if (current.Value == null)
                         {
                             return;
                         }
                     }
 
-                    if (current.Value.UI.IsPauseCoveredUIForm())
+                    if (fui.PauseCoveredUIForm)
                     {
                         pause = true;
                     }
 
                     if (cover)
                     {
-                        if (!current.Value.Covered)
+                        if (!fuiInfo.Covered)
                         {
-                            current.Value.Covered = true;
-                            current.Value.UI.OnCover();
+                            fuiInfo.Covered = true;
+                            fui.OnCover();
                             if (current.Value == null)
                             {
                                 return;
@@ -202,10 +209,10 @@ namespace ET.Client
                     }
                     else
                     {
-                        if (current.Value.Covered)
+                        if (fuiInfo.Covered)
                         {
-                            current.Value.Covered = false;
-                            current.Value.UI.OnReveal();
+                            fuiInfo.Covered = false;
+                            fui.OnReveal();
                             if (current.Value == null)
                             {
                                 return;
@@ -215,9 +222,9 @@ namespace ET.Client
                         cover = true;
                     }
 
-                    if (maskLayerFUIInfo == null && current.Value.UI.IsNeedDisplayMaskLayer())
+                    if (maskLayerFUIInfo == null && fui.NeedDisplayMaskLayer)
                     {
-                        maskLayerFUIInfo = current.Value;
+                        maskLayerFUIInfo = fuiInfo;
                     }
                 }
 
@@ -240,7 +247,7 @@ namespace ET.Client
         /// </summary>
         private static FUIInfo GetUIInfo(this FUIGroup self, FUI ui)
         {
-            return self.UIs.FirstOrDefault(info => info.UI == ui);
+            return self.UIs.FirstOrDefault(info => (FUI)info.UI == ui);
         }
 
         /// <summary>

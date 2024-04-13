@@ -36,12 +36,6 @@ namespace ET.Client
             if (self.UIAssetManager == null)
                 return;
             
-            foreach (FUIGroup uiGroup in self.UIGroups.Values)
-            {
-                uiGroup.Dispose();
-            }
-
-            self.UIGroups.Clear();
             self.UIAssetManager.Dispose();
         }
 
@@ -51,15 +45,16 @@ namespace ET.Client
         public static async ETTask InitializeAsync(this FUIComponent self)
         {
             ResourcesLoaderComponent resourcesLoaderComponent = self.Root().GetComponent<ResourcesLoaderComponent>();
-            self.UIPackageHelper = await resourcesLoaderComponent.LoadAssetAsync<UIPackageMapping>(self.UIMappingAssetKey);
-            self.UIAssetManagerConfiguration = new FUIAssetManagerConfiguration(self);
-
+            
+            UIPackageMapping packageMapping = await resourcesLoaderComponent.LoadAssetAsync<UIPackageMapping>(self.UIMappingAssetKey);
+            FUIAssetLoader assetLoader = new FUIAssetLoader(self);
+            
             self.UIAssetManager = new UIAssetManager();
-            self.UIAssetManager.Initialize(self.UIAssetManagerConfiguration);
+            self.UIAssetManager.Initialize(new FUIAssetManagerConfiguration(packageMapping, assetLoader));
 
             for (FUIGroupId id = 0; id < FUIGroupId.Count; id++)
             {
-                FUIGroup group = self.AddChild<FUIGroup, FUIGroupId, int>(id, self.UIGroups.Count);
+                FUIGroup group = self.AddChild<FUIGroup, FUIGroupId>(id);
                 self.UIGroups.Add(id, group);
             }
         }
@@ -85,19 +80,19 @@ namespace ET.Client
         /// </summary>
         public static FUI GetOpenedUI(this FUIComponent self, FUIViewId viewId)
         {
-            IFUIEventHandler eventHandler = self.GetEventHandler(viewId);
-            if (eventHandler == null)
+            FUI fui = self.GetLoadedUI(viewId);
+            if (fui == null)
+            {
+                return null;
+            }
+            
+            FUIGroup fuiGroup = self.GetGroup(fui.FUIGroupId);
+            if (fuiGroup == null)
             {
                 return null;
             }
 
-            FUIGroup uiGroup = self.GetGroup(eventHandler.FUIGroupId);
-            if (uiGroup == null)
-            {
-                return null;
-            }
-
-            return uiGroup.GetUI(viewId);
+            return fuiGroup.HasUI(fui) ? fui : null;
         }
 
         /// <summary>
@@ -122,53 +117,62 @@ namespace ET.Client
                 return null;
             }
 
-            FUIGroup uiGroup = self.GetGroup(eventHandler.FUIGroupId);
-            if (uiGroup == null)
-            {
-                Log.Error($"UI组不存在: {eventHandler.FUIGroupId}");
-                return null;
-            }
-
             FUI fui = self.GetLoadedUI(viewId);
-            if (fui == null)
+            while (true)
             {
-                fui = await self.LoadFUIAsync(viewId, eventHandler);
-                
                 if (fui == null)
                 {
-                    return null;
-                }
+                    fui = await self.LoadFUIAsync(viewId, eventHandler);
                 
+                    if (fui == null)
+                    {
+                        return null;
+                    }
+                
+                    if (cancellationToken.IsCancel() || awaitCancellationToken.IsCancel())
+                    {
+                        return null;
+                    }
+                }
+
+                // 处理全局UI的并发打开
+                using CoroutineLock __ = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.UI, 0);
+
                 if (cancellationToken.IsCancel() || awaitCancellationToken.IsCancel())
                 {
                     return null;
                 }
-            }
+                
+                // 再次检查是否已加载
+                fui = self.GetLoadedUI(viewId);
 
-            // 处理全局UI的并发打开
-            using CoroutineLock __ = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.UI, 0);
+                // 在等待协程锁的过程中界面实例被销毁了 但由于请求未取消，这里需要重新加载
+                if (fui == null)
+                {
+                    continue;
+                }
 
-            if (cancellationToken.IsCancel() || awaitCancellationToken.IsCancel())
-            {
-                return null;
-            }
+                FUIGroup uiGroup = self.GetGroup(fui.FUIGroupId);
+                if (uiGroup == null)
+                {
+                    return null;
+                }
+                
+                if (uiGroup.HasUI(fui))
+                {
+                    // 已经打开的UI 重新聚焦
+                    uiGroup.RefocusUI(fui);
+                    uiGroup.Refresh();
 
-            if (uiGroup.HasUI(fui))
-            {
-                // 已经打开的UI 重新聚焦
-                uiGroup.RefocusUI(fui);
+                    fui.OnRefocus(userdata);
+                    return fui;
+                }
+
+                // 未打开的UI
+                uiGroup.AddUI(fui);
                 uiGroup.Refresh();
-
-                fui.OnRefocus(userdata);
                 return fui;
             }
-
-            // 未打开的UI
-            uiGroup.AddUI(fui);
-            uiGroup.Refresh();
-
-            fui.OnOpen(userdata);
-            return fui;
         }
 
         /// <summary>
@@ -196,7 +200,7 @@ namespace ET.Client
             
             foreach (FUI fui in self.UIDict.Values)
             {
-                FUIGroup uiGroup = self.GetGroup(fui.EventHandler.FUIGroupId);
+                FUIGroup uiGroup = self.GetGroup(fui.FUIGroupId);
 
                 if (uiGroup == null || !uiGroup.HasUI(fui))
                 {
@@ -262,21 +266,21 @@ namespace ET.Client
         /// </summary>
         private static async ETTask CloseUIAsync(this FUIComponent self, FUIViewId viewId, bool includeOpening = true)
         {
-            IFUIEventHandler eventHandler = self.GetEventHandler(viewId);
-            if (eventHandler == null)
+            // 中止打开中的UI
+            if (includeOpening)
+                RemoveAwaitCancellationToken(self, viewId);
+            
+            FUI fui = self.GetLoadedUI(viewId);
+            if (fui == null)
             {
                 return;
             }
-
-            FUIGroup uiGroup = self.GetGroup(eventHandler.FUIGroupId);
+            
+            FUIGroup uiGroup = self.GetGroup(fui.FUIGroupId);
             if (uiGroup == null)
             {
                 return;
             }
-
-            // 中止打开中的UI
-            if (includeOpening)
-                RemoveAwaitCancellationToken(self, viewId);
 
             // 未包含UI则忽略
             if (!uiGroup.HasUI(viewId))
@@ -287,7 +291,7 @@ namespace ET.Client
             // 关闭UI需要等待全局的协程锁
             using CoroutineLock _ = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.UI, 0);
 
-            FUI fui = uiGroup.GetUI(viewId);
+            fui = uiGroup.GetUI(viewId);
             if (fui == null)
             {
                 return;

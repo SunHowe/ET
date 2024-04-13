@@ -21,6 +21,13 @@
       "dependencies": {},
       "hash": "b3ae3fc24c062bc97f6b035f690bd517ff5ca6b1"
     },
+    "com.howegame.fariygui.generator": {
+      "version": "https://github.com/SunHowe/FairyGUI-CodeGenerator.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "572f41dbf132e9cfd8c7d201f912fdfe8c94e3ac"
+    },
     "com.tuyoogame.yooasset": {
       "version": "2.1.1",
       "depth": 0,

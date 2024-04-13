@@ -9,7 +9,6 @@ namespace ET.Client
         {
             Room room = clientScene.GetComponent<Room>();
             ResourcesLoaderComponent resourcesLoaderComponent = room.AddComponent<ResourcesLoaderComponent>();
-            room.AddComponent<UIComponent>();
             
             // 创建loading界面
             

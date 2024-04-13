@@ -12,13 +12,13 @@ namespace ET.Client
             self.ViewId = viewId;
             self.ContentPane = contentPane;
             self.EventHandler = eventHandler;
-            self.EventHandler.OnCreate(self);
+            self.OnCreate();
         }
 
         [EntitySystem]
         private static void Destroy(this FUI self)
         {
-            self.EventHandler.OnDestroy(self);
+            self.OnDestroy();
             self.ContentPane.Dispose();
         }
 
@@ -60,6 +60,22 @@ namespace ET.Client
         {
             self.EventHandler.OnDestroy(self);
         }
+        
+        /// <summary>
+        /// 界面打开时调用
+        /// </summary>
+        public static void OnOpen(this FUI self, object userData)
+        {
+            self.EventHandler.OnOpen(self, userData);
+        }
+        
+        /// <summary>
+        /// 界面关闭时调用
+        /// </summary>
+        public static void OnClose(this FUI self)
+        {
+            self.EventHandler.OnClose(self);
+        }
 
         /// <summary>
         /// 界面暂停
@@ -96,9 +112,9 @@ namespace ET.Client
         /// <summary>
         /// 界面激活
         /// </summary>
-        public static void OnRefocus(this FUI self)
+        public static void OnRefocus(this FUI self, object userdata)
         {
-            self.EventHandler.OnRefocus(self);
+            self.EventHandler.OnRefocus(self, userdata);
         }
 
         /// <summary>

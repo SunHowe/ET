@@ -3,10 +3,12 @@
 namespace ET.Client
 {
     [ChildOf]
-    public sealed class FUI: Entity, IAwake<FUIViewId, GComponent, IFUIEventHandler>, IDestroy
+    public sealed class FUI : Entity, IAwake<FUIViewId, GComponent, IFUIEventHandler>, IDestroy
     {
         public FUIViewId ViewId { get; set; }
         public GComponent ContentPane { get; set; }
-		public IFUIEventHandler EventHandler { get; set; }
+        public IFUIEventHandler EventHandler { get; set; }
+
+        public string UIGroupName => this.EventHandler?.UIGroupName ?? string.Empty;
     }
 }

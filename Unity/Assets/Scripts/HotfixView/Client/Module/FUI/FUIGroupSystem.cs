@@ -32,6 +32,22 @@ namespace ET.Client
         {
             return self.UIs.First?.Value?.UI;
         }
+        
+        /// <summary>
+        /// 是否包含UI
+        /// </summary>
+        public static bool HasUI(this FUIGroup self, FUI ui)
+        {
+            return self.UIs.Any(info => info.UI == ui);
+        }
+        
+        /// <summary>
+        /// 是否包含UI
+        /// </summary>
+        public static bool HasUI(this FUIGroup self, FUIViewId viewId)
+        {
+            return self.UIs.Any(info => info.UI.ViewId == viewId);
+        }
 
         /// <summary>
         /// 添加UI到分组
@@ -39,6 +55,24 @@ namespace ET.Client
         public static void AddUI(this FUIGroup self, FUI ui)
         {
             self.UIs.AddFirst(CreateUIInfo(ui));
+        }
+
+        /// <summary>
+        /// 获取分组中的UI
+        /// </summary>
+        public static FUI GetUI(this FUIGroup self, FUIViewId viewId)
+        {
+            return self.UIs.FirstOrDefault(info => info.UI.ViewId == viewId)?.UI;
+        }
+
+        /// <summary>
+        /// 获取分组中的所有UI
+        /// </summary>
+        public static int GetUIList(this FUIGroup self, List<FUI> buffer)
+        {
+            buffer.Clear();
+            buffer.AddRange(self.UIs.Select(info => info.UI));
+            return buffer.Count;
         }
 
         /// <summary>

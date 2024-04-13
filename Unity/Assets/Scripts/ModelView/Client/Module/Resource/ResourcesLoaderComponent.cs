@@ -66,6 +66,35 @@ namespace ET.Client
             return (T)((AssetHandle)handler).AssetObject;
         }
 
+        public static async ETTask<byte[]> LoadRawAsync(this ResourcesLoaderComponent self, string location)
+        {
+            using CoroutineLock coroutineLock = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.ResourcesLoader, location.GetHashCode());
+            
+            HandleBase handler;
+            if (!self.handlers.TryGetValue(location, out handler))
+            {
+                handler = self.package.LoadRawFileAsync(location);
+
+                await handler.Task;
+
+                self.handlers.Add(location, handler);
+            }
+            
+            return ((RawFileHandle)handler).GetRawFileData();
+        }
+        
+        public static byte[] LoadRawSync(this ResourcesLoaderComponent self, string location)
+        {
+            HandleBase handler;
+            if (!self.handlers.TryGetValue(location, out handler))
+            {
+                handler = self.package.LoadRawFileSync(location);
+                self.handlers.Add(location, handler);
+            }
+            
+            return ((RawFileHandle)handler).GetRawFileData();
+        }
+
         public static async ETTask<Dictionary<string, T>> LoadAllAssetsAsync<T>(this ResourcesLoaderComponent self, string location) where T : UnityEngine.Object
         {
             using CoroutineLock coroutineLock = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.ResourcesLoader, location.GetHashCode());

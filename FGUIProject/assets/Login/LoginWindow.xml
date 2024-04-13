@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="800,600">
+  <displayList>
+    <graph id="n1_w7t2" name="n1" xy="300,228" size="200,40" group="n5_w7t2" type="rect" lineSize="0" corner="6">
+      <relation target="" sidePair="center-center"/>
+    </graph>
+    <graph id="n3_w7t2" name="n3" xy="300,280" size="200,40" group="n5_w7t2" type="rect" lineSize="0" corner="6">
+      <relation target="" sidePair="center-center"/>
+    </graph>
+    <component id="n0_w7t2" name="btnLogin" src="w7t21" fileName="Button.xml" xy="300,332" group="n5_w7t2" aspect="true">
+      <relation target="" sidePair="center-center"/>
+      <Button title="登录"/>
+    </component>
+    <group id="n5_w7t2" name="n5" xy="300,228" size="200,144" advanced="true" layout="vt" lineGap="12" excludeInvisibles="true">
+      <relation target="" sidePair="middle-middle"/>
+    </group>
+    <text id="n2_w7t2" name="inputAccount" xy="305,230" size="190,36" fontSize="20" vAlign="middle" autoSize="none" singleLine="true" autoClearText="true" text="" input="true" prompt="请输入帐号">
+      <relation target="n1_w7t2" sidePair="width-width,height-height,center-center,middle-middle"/>
+    </text>
+    <text id="n4_w7t2" name="inputPassword" xy="305,282" size="190,36" fontSize="20" vAlign="middle" autoSize="none" singleLine="true" autoClearText="true" text="" input="true" prompt="请输入密码">
+      <relation target="n3_w7t2" sidePair="width-width,height-height,center-center,middle-middle"/>
+    </text>
+  </displayList>
+</component>

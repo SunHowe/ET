@@ -21,7 +21,7 @@ namespace ET.Client
         }
         
         [EntitySystem]
-        private static void Destroy(this ET.Client.FUIScreenAdaptorComponent self)
+        private static void Destroy(this FUIScreenAdaptorComponent self)
         {
             GRoot.inst.onSizeChanged.Remove(self.UpdateSafeArea);
         }
@@ -38,6 +38,11 @@ namespace ET.Client
             }
 
             self.UISafeArea = safeArea;
+            EventSystem.Instance.Publish(self.Scene(), new FUIScreenAdaptorChangedEvent
+            {
+                UISafeArea = safeArea
+            });
+            GRoot.inst.DispatchEvent(nameof(FUIScreenAdaptorChangedEvent));
         }
 
         public static Rect CalculateSafeArea(this FUIScreenAdaptorComponent self)

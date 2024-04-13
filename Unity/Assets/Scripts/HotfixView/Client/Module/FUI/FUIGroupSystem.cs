@@ -9,9 +9,9 @@ namespace ET.Client
     public static partial class FUIGroupSystem
     {
         [EntitySystem]
-        public static void Awake(this FUIGroup self, string name, int depth)
+        public static void Awake(this FUIGroup self, FUIGroupId groupId, int depth)
         {
-            self.Name = name;
+            self.GroupId = groupId;
             self.Depth = depth;
 
             GRoot groot = GRoot.inst;

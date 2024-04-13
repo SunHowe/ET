@@ -6,10 +6,10 @@ namespace ET.Client
     /// <summary>
     /// FUI组 用于管理同组的FUI
     /// </summary>
-    public sealed class FUIGroup : Entity, IAwake<string, int>
+    public sealed class FUIGroup : Entity, IAwake<FUIGroupId, int>
     {
         public GComponent ContentPane { get; set; }
-        public string Name { get; set; }
+        public FUIGroupId GroupId { get; set; }
         public int Depth { get; set; }
         public LinkedList<FUIInfo> UIs = new();
         public LinkedListNode<FUIInfo> CacheNode;

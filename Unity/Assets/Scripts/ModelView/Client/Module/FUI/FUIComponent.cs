@@ -9,7 +9,7 @@ namespace ET.Client
         public string UIAssetKeyPrefix { get; set; }
         public string UIMappingAssetKey { get; set; }
         
-        public Dictionary<string, FUIGroup> UIGroups = new();
+        public Dictionary<FUIGroupId, FUIGroup> UIGroups = new();
         public Dictionary<FUIViewId, IFUIEventHandler> EventHandlers = new();
         public Dictionary<FUIViewId, FUI> UIDict = new();
         public Dictionary<FUIViewId, ETCancellationToken> UIAwaitDict = new();

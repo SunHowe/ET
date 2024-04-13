@@ -12,6 +12,7 @@ namespace ET.Client
             self.ViewId = viewId;
             self.ContentPane = contentPane;
             self.EventHandler = eventHandler;
+            self.AddComponent(eventHandler.ComponentType);
             self.OnCreate();
         }
 

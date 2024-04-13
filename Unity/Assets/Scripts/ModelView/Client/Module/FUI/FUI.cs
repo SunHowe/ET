@@ -9,6 +9,6 @@ namespace ET.Client
         public GComponent ContentPane { get; set; }
         public IFUIEventHandler EventHandler { get; set; }
 
-        public string UIGroupName => this.EventHandler?.UIGroupName ?? string.Empty;
+        public FUIGroupId FUIGroupId => this.EventHandler?.FUIGroupId ?? 0;
     }
 }

@@ -56,30 +56,20 @@ namespace ET.Client
 
             self.UIAssetManager = new UIAssetManager();
             self.UIAssetManager.Initialize(self.UIAssetManagerConfiguration);
-        }
 
-        /// <summary>
-        /// 创建UI组
-        /// </summary>
-        public static FUIGroup CreateGroup(this FUIComponent self, string name)
-        {
-            if (self.UIGroups.TryGetValue(name, out FUIGroup group))
+            for (FUIGroupId id = 0; id < FUIGroupId.Count; id++)
             {
-                return group;
+                FUIGroup group = self.AddChild<FUIGroup, FUIGroupId, int>(id, self.UIGroups.Count);
+                self.UIGroups.Add(id, group);
             }
-
-            group = self.AddChild<FUIGroup, string, int>(name, self.UIGroups.Count);
-            self.UIGroups.Add(name, group);
-
-            return group;
         }
 
         /// <summary>
         /// 获取UI组
         /// </summary>
-        public static FUIGroup GetGroup(this FUIComponent self, string name)
+        public static FUIGroup GetGroup(this FUIComponent self, FUIGroupId group)
         {
-            return self.UIGroups.GetValueOrDefault(name);
+            return self.UIGroups.GetValueOrDefault(group);
         }
 
         /// <summary>
@@ -101,7 +91,7 @@ namespace ET.Client
                 return null;
             }
 
-            FUIGroup uiGroup = self.GetGroup(eventHandler.UIGroupName);
+            FUIGroup uiGroup = self.GetGroup(eventHandler.FUIGroupId);
             if (uiGroup == null)
             {
                 return null;
@@ -132,10 +122,10 @@ namespace ET.Client
                 return null;
             }
 
-            FUIGroup uiGroup = self.GetGroup(eventHandler.UIGroupName);
+            FUIGroup uiGroup = self.GetGroup(eventHandler.FUIGroupId);
             if (uiGroup == null)
             {
-                Log.Error($"UI组不存在: {eventHandler.UIGroupName}");
+                Log.Error($"UI组不存在: {eventHandler.FUIGroupId}");
                 return null;
             }
 
@@ -206,7 +196,7 @@ namespace ET.Client
             
             foreach (FUI fui in self.UIDict.Values)
             {
-                FUIGroup uiGroup = self.GetGroup(fui.EventHandler.UIGroupName);
+                FUIGroup uiGroup = self.GetGroup(fui.EventHandler.FUIGroupId);
 
                 if (uiGroup == null || !uiGroup.HasUI(fui))
                 {
@@ -278,7 +268,7 @@ namespace ET.Client
                 return;
             }
 
-            FUIGroup uiGroup = self.GetGroup(eventHandler.UIGroupName);
+            FUIGroup uiGroup = self.GetGroup(eventHandler.FUIGroupId);
             if (uiGroup == null)
             {
                 return;

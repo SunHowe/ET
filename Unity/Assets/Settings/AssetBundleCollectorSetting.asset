@@ -115,8 +115,8 @@ MonoBehaviour:
         FilterRuleName: CollectBytes
         AssetTags: 
         UserData: 
-      - CollectPath: 
-        CollectorGUID: 
+      - CollectPath: Assets/Bundles/FUI
+        CollectorGUID: 57b5679b37c7c204583bf7cd25c97490
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackSeparately

@@ -13,7 +13,12 @@
         "Unity.ModelView",
         "Unity.Hotfix",
         "Unity.HotfixView",
-        "ToolbarExtension.Editor"
+        "ToolbarExtension.Editor",
+        "YooAsset.Editor",
+        "FairyGUI",
+        "FairyGUI.Dyanmic",
+        "FairyGUI.Dynamic.Editor",
+        "FairyGUI.CodeGenerator"
     ],
     "includePlatforms": [
         "Editor"

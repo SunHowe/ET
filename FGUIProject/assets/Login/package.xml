@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <packageDescription id="gb2fsa1x">
   <resources>
-    <component id="drq90" name="LoginWindow.xml" path="/" exported="true"/>
+    <component id="drq90" name="LoginForm.xml" path="/" exported="true"/>
     <component id="w7t21" name="Button.xml" path="/"/>
   </resources>
   <publish name=""/>

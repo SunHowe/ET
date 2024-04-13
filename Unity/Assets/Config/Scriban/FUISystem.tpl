@@ -14,6 +14,7 @@ namespace ET.Client
     [FriendOf(typeof({{ name }}))]
     public static partial class {{ name }}System
     {
+		[EntitySystem]
         public static void Awake(this {{ name }} self, GComponent contentPane)
         {
             #region [子节点]

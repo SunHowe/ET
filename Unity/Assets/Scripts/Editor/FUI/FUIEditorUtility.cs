@@ -24,11 +24,14 @@ namespace ET
             private const string UIAssetsRoot = "Assets/Bundles/FUI";
             private const string UIMappingGeneratePath = UIAssetsRoot + "/" + nameof(UIPackageMapping) + ".asset";
 
-            private const string ScribanTemplateRoot = "../Scriban";
-            private const string UIBindingCodeGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/UIGen";
-            private const string UILogicCodeGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/UI";
+            private const string ScribanTemplateRoot = "Assets/Config/Scriban";
+            
+            private const string FUIGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
+            private const string FUISystemGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
+            private const string FUIEventHandlerGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
+            private const string FUIEnumFilePath = "Assets/Scripts/ModelView/Client/Module/FUI/FUIViewId.cs";
 
-            private const string UINamespace = "GameLogic.UI";
+            private const string UINamespace = "ET.Client";
             
             private sealed class UIAssetsImporter : AssetPostprocessor
             {
@@ -65,46 +68,55 @@ namespace ET
             [MenuItem(MenuItemGenerateCode, false)]
             public static void GenerateCode()
             {
-                var filter = new UIComponentFilter();
+                UIComponentFilter filter = new UIComponentFilter();
                 
-                if (!Directory.Exists(UIBindingCodeGenerateRoot))
-                    Directory.CreateDirectory(UIBindingCodeGenerateRoot);
+                if (!Directory.Exists(FUIEventHandlerGenerateRoot))
+                    Directory.CreateDirectory(FUIEventHandlerGenerateRoot);
+
+                #region [生成FUI代码]
+
+                // 每次都删除重建
+                if (Directory.Exists(FUIGenerateRoot))
+                    Directory.Delete(FUIGenerateRoot, true);
+
+                Directory.CreateDirectory(FUIGenerateRoot);
                 
-                // 记录此时的绑定文件列表
-                var bindingFiles = Directory.GetFiles(UIBindingCodeGenerateRoot, "*.cs", SearchOption.AllDirectories);
-
-                #region [生成UI绑定代码]
-
-                // 每次都重新生成
-                if (Directory.Exists(UIBindingCodeGenerateRoot))
-                    Directory.Delete(UIBindingCodeGenerateRoot, true);
-                Directory.CreateDirectory(UIBindingCodeGenerateRoot);
-
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetBindingCodeExportSettings), filter);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICodeExportSettings), filter);
 
                 #endregion
 
-                #region [生成UI逻辑代码]
+                #region [生成FUISystem代码]
 
-                // 一个文件只生成一次
-                if (!Directory.Exists(UILogicCodeGenerateRoot))
-                    Directory.CreateDirectory(UILogicCodeGenerateRoot);
-
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetLogicCodeExportSettings), filter);
+                // 每次都删除重建
+                if (Directory.Exists(FUISystemGenerateRoot))
+                    Directory.Delete(FUISystemGenerateRoot, true);
+                
+                Directory.CreateDirectory(FUISystemGenerateRoot);
+                
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUISystemCodeExportSettings), filter);
 
                 #endregion
-                
-                // 重新获取绑定文件列表 将不存在的绑定文件对应的逻辑文件删除
-                var newBindingFiles = Directory.GetFiles(UIBindingCodeGenerateRoot, "*.cs", SearchOption.AllDirectories);
-                foreach (var bindingFile in bindingFiles)
-                {
-                    if (newBindingFiles.Contains(bindingFile))
-                        continue;
 
-                    var logicFile = bindingFile.Replace(UIBindingCodeGenerateRoot, UILogicCodeGenerateRoot);
-                    if (System.IO.File.Exists(logicFile))
-                        System.IO.File.Delete(logicFile);
-                }
+                #region [生成FUIEventHandler代码]
+
+                // 这个目录下的代码不会被删除 只会新增
+                if (!Directory.Exists(FUIEventHandlerGenerateRoot))
+                    Directory.CreateDirectory(FUIEventHandlerGenerateRoot);
+
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetEventHandlerCodeExportSettings), filter);
+
+                #endregion
+
+                #region [生成界面枚举id]
+
+                if (File.Exists(FUIEnumFilePath))
+                    File.Delete(FUIEnumFilePath);
+                
+                FUIEnumCodeGenerator enumGenerator = new(FUIEnumFilePath, GetFUIViewEnumName);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", enumGenerator, filter);
+                enumGenerator.Flush();
+
+                #endregion
                 
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
@@ -122,50 +134,64 @@ namespace ET
                 }
             }
 
-            private static bool GetLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUICodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
-                outputPath = UILogicCodeGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-
-                // 如果已经存在，则不再生成
-                if (System.IO.File.Exists(outputPath))
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIForm)
                     return false;
-
-                var exportType = GetExportType(component);
-                switch (exportType)
-                {
-                    case UIComponentExportType.None:
-                        return false;
-                    case UIComponentExportType.UIForm:
-                        templatePath = ScribanTemplateRoot + "/UIForm.tpl";
-                        return true;
-                    case UIComponentExportType.UIComponent:
-                        templatePath = ScribanTemplateRoot + "/UIComponent.tpl";
-                        return true;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                
+                // 只生成UIForm代码
+                templatePath = ScribanTemplateRoot + "/FUI.tpl";
+                outputPath = FUIGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                return true;
             }
 
-            private static bool GetBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUISystemCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
-                outputPath = UIBindingCodeGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIForm)
+                    return false;
+                
+                // 只生成UIFormSystem代码
+                templatePath = ScribanTemplateRoot + "/FUISystem.tpl";
+                outputPath = FUISystemGenerateRoot + "/" + component.PackageName + "/" + component.Name + "System.cs";
+                return true;
+            }
 
-                var exportType = GetExportType(component);
-                switch (exportType)
-                {
-                    case UIComponentExportType.None:
-                        return false;
-                    case UIComponentExportType.UIForm:
-                        templatePath = ScribanTemplateRoot + "/UIForm.Binding.tpl";
-                        return true;
-                    case UIComponentExportType.UIComponent:
-                        templatePath = ScribanTemplateRoot + "/UIComponent.Binding.tpl";
-                        return true;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+            private static bool GetEventHandlerCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            {
+                templatePath = string.Empty;
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIForm)
+                    return false;
+                
+                // 只生成EventHandler代码
+                outputPath = FUIEventHandlerGenerateRoot + "/" + component.PackageName + "/" + component.Name + "EventHandler.cs";
+                
+                // 如果已经存在，则不再生成
+                if (File.Exists(outputPath))
+                    return false;
+                
+                templatePath = ScribanTemplateRoot + "/FUIEventHandler.tpl";
+                
+                return true;
+            }
+
+            private static string GetFUIViewEnumName(UIComponent component)
+            {
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIForm)
+                    return string.Empty;
+
+                return component.Name;
             }
 
             private static UIComponentExportType GetExportType(UIComponent component)

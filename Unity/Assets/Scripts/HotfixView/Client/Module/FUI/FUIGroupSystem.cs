@@ -17,6 +17,7 @@ namespace ET.Client
             GRoot groot = GRoot.inst;
 
             self.ContentPane = new GComponent();
+            self.ContentPane.gameObjectName = self.ContentPane.name = groupId.ToString();
             self.ContentPane.size = groot.size;
             self.ContentPane.Center(true);
             self.ContentPane.AddRelation(groot, RelationType.Size);
@@ -55,6 +56,7 @@ namespace ET.Client
         public static void AddUI(this FUIGroup self, FUI ui)
         {
             self.UIs.AddFirst(CreateUIInfo(ui));
+            self.ContentPane.AddChild(ui.ContentPane);
         }
 
         /// <summary>
@@ -108,6 +110,7 @@ namespace ET.Client
                 return;
             }
 
+            self.ContentPane.RemoveChild(ui.ContentPane);
             ObjectPool.Instance.Recycle(info);
         }
 

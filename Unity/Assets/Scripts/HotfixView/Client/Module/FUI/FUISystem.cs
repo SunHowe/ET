@@ -28,6 +28,7 @@ namespace ET.Client
         /// </summary>
         public static void SetDepth(this FUI self, int depth)
         {
+            self.ContentPane.sortingOrder = depth + 1;
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace ET.Client
         {
             return ui.EventHandler.IsPauseCoveredUIForm(ui);
         }
-        
+
         /// <summary>
         /// 是否需要显示遮罩层
         /// </summary>
@@ -61,7 +62,7 @@ namespace ET.Client
         {
             self.EventHandler.OnDestroy(self);
         }
-        
+
         /// <summary>
         /// 界面打开时调用
         /// </summary>
@@ -69,7 +70,7 @@ namespace ET.Client
         {
             self.EventHandler.OnOpen(self, userData);
         }
-        
+
         /// <summary>
         /// 界面关闭时调用
         /// </summary>

@@ -22,6 +22,10 @@ namespace ET.Client
         public FairyGUI.GTextInput InputAccount { get; set; }
   
         public FairyGUI.GTextInput InputPassword { get; set; }
+  
+        public ET.Client.Login.DemoComponent ComDemo { get; set; }
+  
+        public ET.Client.Login.SpecialButton BtnSpecial { get; set; }
  
         #endregion
 

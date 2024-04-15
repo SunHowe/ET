@@ -27,6 +27,10 @@ namespace ET.Client
             self.InputAccount = (FairyGUI.GTextInput)contentPane.GetChild("inputAccount");
   
             self.InputPassword = (FairyGUI.GTextInput)contentPane.GetChild("inputPassword");
+  
+            self.ComDemo = (ET.Client.Login.DemoComponent)contentPane.GetChild("comDemo");
+  
+            self.BtnSpecial = (ET.Client.Login.SpecialButton)contentPane.GetChild("btnSpecial");
  
             #endregion
 

@@ -3,6 +3,8 @@
   <resources>
     <component id="drq90" name="LoginForm.xml" path="/" exported="true"/>
     <component id="w7t21" name="Button.xml" path="/"/>
+    <component id="un9b2" name="DemoComponent.xml" path="/"/>
+    <component id="un9b3" name="SpecialButton.xml" path="/"/>
   </resources>
   <publish name=""/>
 </packageDescription>

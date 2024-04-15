@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="150,150">
+  <displayList>
+    <graph id="n0_un9b" name="n0" xy="0,0" size="150,150" type="rect" lineSize="0"/>
+    <text id="n1_un9b" name="txtLabel1" xy="47,36" size="55,29" fontSize="20" singleLine="true" autoClearText="true" text="文本1">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+    <text id="n2_un9b" name="txtLabel2" xy="47,89" size="55,29" fontSize="20" singleLine="true" autoClearText="true" text="文本2">
+      <relation target="" sidePair="center-center,middle-middle"/>
+    </text>
+  </displayList>
+</component>

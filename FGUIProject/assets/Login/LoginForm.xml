@@ -20,5 +20,12 @@
     <text id="n4_w7t2" name="inputPassword" xy="305,282" size="190,36" fontSize="20" vAlign="middle" autoSize="none" singleLine="true" autoClearText="true" text="" input="true" prompt="请输入密码">
       <relation target="n3_w7t2" sidePair="width-width,height-height,center-center,middle-middle"/>
     </text>
+    <component id="n6_un9b" name="comDemo" src="un9b2" fileName="DemoComponent.xml" xy="569,225">
+      <relation target="" sidePair="middle-middle,left-center"/>
+    </component>
+    <component id="n7_un9b" name="btnSpecial" src="un9b3" fileName="SpecialButton.xml" xy="544,405">
+      <relation target="" sidePair="middle-middle,left-center"/>
+      <Button title="特殊按钮"/>
+    </component>
   </displayList>
 </component>

@@ -79,6 +79,7 @@ namespace ET
                 Directory.CreateDirectory(FUIBindingGenerateRoot);
                 
                 UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIBindingCodeExportSettings), filter);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICustomComponentBindingCodeExportSettings), filter);
 
                 #endregion
 
@@ -143,6 +144,21 @@ namespace ET
                 
                 // 只生成UIForm代码
                 templatePath = ScribanTemplateRoot + "/FUI.Binding.tpl";
+                outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                return true;
+            }
+
+            private static bool GetFUICustomComponentBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            {
+                templatePath = string.Empty;
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIComponent)
+                    return false;
+                
+                // 只生成UIForm代码
+                templatePath = ScribanTemplateRoot + "/UIComponent.Binding.tpl";
                 outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
                 return true;
             }

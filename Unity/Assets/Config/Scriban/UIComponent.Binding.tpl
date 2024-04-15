@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace ET.Client.{{ package_name }}
 {
-    [FUIComponent(URL)]
+    [FUICustomComponentAttribute(URL)]
     public partial class {{ name }} : {{ extension_type.full_name }}
     {
         public const string URL = "{{ url }}";
@@ -66,39 +66,6 @@ namespace ET.Client.{{ package_name }}
             {{ upper_first transition.name }}Transition = GetTransition("{{ transition.name }}");
 {{ end }} {{ end }}
             #endregion
-
-            #region [生命周期事件]
-
-            this.onAddedToStage.Add(_OnAddedToStage);
-            this.onRemovedFromStage.Add(_OnRemoveFromStage);
-
-            #endregion
-
-            OnInitialize();
         }
-
-        public override void Dispose()
-        {
-            OnDispose();
-            
-            base.Dispose();
-        }
-        
-        #region [生命周期]
-        
-        private void _OnAddedToStage()
-        {
-            OnAddedToStage();
-        }
-        
-        private void _OnRemoveFromStage()
-        {
-            OnRemoveFromStage();
-        }
-        
-        partial void OnAddedToStage();
-        partial void OnRemoveFromStage();
-        
-        #endregion
     }
 }

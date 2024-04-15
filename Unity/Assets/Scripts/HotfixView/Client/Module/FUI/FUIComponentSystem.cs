@@ -26,6 +26,19 @@ namespace ET.Client
                 self.EventHandlers.Add(uiEventAttribute.ViewId, aUIEvent);
             }
             
+            var uiCustomComponents = CodeTypes.Instance.GetTypes(typeof(FUICustomComponentAttribute));
+            foreach (Type type in uiCustomComponents)
+            {
+                object[] attrs = type.GetCustomAttributes(typeof(FUICustomComponentAttribute), false);
+                if (attrs.Length == 0)
+                {
+                    continue;
+                }
+
+                FUICustomComponentAttribute uiCustomComponentAttribute = attrs[0] as FUICustomComponentAttribute;
+                UIObjectFactory.SetPackageItemExtension(uiCustomComponentAttribute.URL, type);
+            }
+            
             self.UIAssetKeyPrefix = uiAssetKeyPrefix;
             self.UIMappingAssetKey = uiMappingAssetKey;
         }
@@ -33,6 +46,8 @@ namespace ET.Client
         [EntitySystem]
         private static void Destroy(this FUIComponent self)
         {
+            UIObjectFactory.Clear();
+            
             if (self.UIAssetManager == null)
                 return;
             

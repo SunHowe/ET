@@ -2,8 +2,11 @@
 
 namespace ET.Client
 {
+    /// <summary>
+    /// 用于标记界面事件实例
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class FUIEventAttribute : BaseAttribute
+    public sealed class FUIEventAttribute : BaseAttribute
     {
         public FUIViewId ViewId { get; }
 

@@ -22,15 +22,15 @@ namespace ET.Client
 
             #region [子节点]
      
-            self.BtnLogin = (FairyGUI.GButton)contentPane.GetChild("btnLogin");
+            self.BtnLogin = (FairyGUI.GButton)contentPane.GetChildAt(2);
     
-            self.InputAccount = (FairyGUI.GTextInput)contentPane.GetChild("inputAccount");
+            self.InputAccount = (FairyGUI.GTextInput)contentPane.GetChildAt(4);
   
-            self.InputPassword = (FairyGUI.GTextInput)contentPane.GetChild("inputPassword");
+            self.InputPassword = (FairyGUI.GTextInput)contentPane.GetChildAt(5);
   
-            self.ComDemo = (ET.Client.Login.DemoComponent)contentPane.GetChild("comDemo");
+            self.ComDemo = (ET.Client.Login.DemoComponent)contentPane.GetChildAt(6);
   
-            self.BtnSpecial = (ET.Client.Login.SpecialButton)contentPane.GetChild("btnSpecial");
+            self.BtnSpecial = (ET.Client.Login.SpecialButton)contentPane.GetChildAt(7);
  
             #endregion
 

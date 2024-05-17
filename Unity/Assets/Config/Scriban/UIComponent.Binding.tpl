@@ -51,19 +51,19 @@ namespace ET.Client.{{ package_name }}
 
             #region [子节点]
 {{ for node in nodes }} {{ if is_accept_name node.name }}
-            {{ upper_first node.name }} = ({{ node.ref_type_full_name }})GetChild("{{ node.name }}");
+            {{ upper_first node.name }} = ({{ node.ref_type_full_name }})GetChildAt({{ node.index }});
 {{ end }} {{ end }}
             #endregion
 
             #region [控制器]
 {{ for controller in controllers }} {{ if is_accept_name controller.name }}
-            {{ upper_first controller.name }}Controller = GetController("{{ controller.name }}");
+            {{ upper_first controller.name }}Controller = GetControllerAt({{ controller.index }});
 {{ end }} {{ end }}
             #endregion
 
             #region [动效]
 {{ for transition in transitions }} {{ if is_accept_name transition.name }}
-            {{ upper_first transition.name }}Transition = GetTransition("{{ transition.name }}");
+            {{ upper_first transition.name }}Transition = GetTransitionAt({{ transition.index }});
 {{ end }} {{ end }}
             #endregion
         }

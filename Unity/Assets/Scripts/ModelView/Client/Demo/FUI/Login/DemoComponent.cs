@@ -38,9 +38,9 @@ namespace ET.Client.Login
 
             #region [子节点]
    
-            TxtLabel1 = (FairyGUI.GTextField)GetChild("txtLabel1");
+            TxtLabel1 = (FairyGUI.GTextField)GetChildAt(1);
   
-            TxtLabel2 = (FairyGUI.GTextField)GetChild("txtLabel2");
+            TxtLabel2 = (FairyGUI.GTextField)GetChildAt(2);
  
             #endregion
 

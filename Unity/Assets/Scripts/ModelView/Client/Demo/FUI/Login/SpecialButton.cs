@@ -54,15 +54,15 @@ namespace ET.Client.Login
 
             #region [子节点]
        
-            Title = (FairyGUI.GTextField)GetChild("title");
+            Title = (FairyGUI.GTextField)GetChildAt(3);
   
-            Graph = (FairyGUI.GGraph)GetChild("graph");
+            Graph = (FairyGUI.GGraph)GetChildAt(4);
    
             #endregion
 
             #region [控制器]
  
-            ButtonController = GetController("button");
+            ButtonController = GetControllerAt(0);
  
             #endregion
 

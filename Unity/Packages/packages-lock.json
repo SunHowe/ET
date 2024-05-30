@@ -19,7 +19,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "b3ae3fc24c062bc97f6b035f690bd517ff5ca6b1"
+      "hash": "27eb30410eae05f3ee91785a45760bc61ef5286f"
     },
     "com.howegame.fariygui.generator": {
       "version": "https://github.com/SunHowe/FairyGUI-CodeGenerator.git",

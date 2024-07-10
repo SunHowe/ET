@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.code-philosophy.hybridclr": "https://gitee.com/focus-creative-games/hybridclr_unity.git",
-    "com.cysharp.memorypack": "https://github.com/Cysharp/MemoryPack.git?path=src/MemoryPack.Unity/Assets/Plugins/MemoryPack",
+    "com.cysharp.memorypack": "https://github.com/Cysharp/MemoryPack.git?path=src/MemoryPack.Unity/Assets/Plugins/MemoryPack#1.10.0",
     "com.howegame.fariygui.dynamic": "https://github.com/SunHowe/FairyGUI-Dynamic.git",
     "com.howegame.fariygui.generator": "https://github.com/SunHowe/FairyGUI-CodeGenerator.git",
     "com.tuyoogame.yooasset": "2.1.1",

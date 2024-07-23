@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ET
 {
@@ -237,6 +238,20 @@ namespace ET
             finally
             {
                 cancellationToken?.Remove(CancelAction);
+            }
+        }
+
+        public static async ETTask WaitWhile(this TimerComponent self, Func<bool> func, ETCancellationToken cancellationToken = null)
+        {
+            if (cancellationToken != null && cancellationToken.IsCancel())
+                return;
+
+            while (func())
+            {
+                await self.WaitFrameAsync();
+                
+                if (cancellationToken != null && cancellationToken.IsCancel())
+                    return;
             }
         }
 

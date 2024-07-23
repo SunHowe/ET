@@ -16,11 +16,8 @@ namespace ET.Client.Login
     public partial class DemoComponent : FairyGUI.GComponent
     {
         public const string URL = "ui://gb2fsa1xun9b2";
-
-        /// <summary>
-        /// 组件逻辑
-        /// </summary>
-        public IFUICompLogic CompLogic { get; private set; }
+        
+        private IFUICompEventHandler m_EventHandler;
 
         #region [子节点]
    
@@ -58,21 +55,15 @@ namespace ET.Client.Login
 
             #endregion
 
-            CompLogic = FUICompLogicComponent.Instance.CreateCompLogic(typeof(DemoComponent));
-            CompLogic?.Initialize(this);
+            m_EventHandler = FUICompEventComponent.Instance.CreateCompEventHandler(typeof(DemoComponent));
+            m_EventHandler?.Initialize(this);
         }
 
         public override void Dispose()
         {
-            CompLogic?.Dispose();
-            CompLogic = null;
+            m_EventHandler?.Dispose();
+            m_EventHandler = null;
             base.Dispose();
-        }
-
-        public override void Setup_AfterAdd(ByteBuffer buffer, int beginPos)
-        {
-            base.Setup_AfterAdd(buffer, beginPos);
-            CompLogic?.SetupAfterAdd();
         }
     }
 }

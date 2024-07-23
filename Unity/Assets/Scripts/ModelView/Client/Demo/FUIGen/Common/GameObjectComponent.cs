@@ -10,41 +10,23 @@ using System;
 using System.Threading;
 using FairyGUI.Utils;
 
-namespace ET.Client.Login
+namespace ET.Client.Common
 {
     [FUICustomComponentAttribute(URL)]
-    public partial class SpecialButton : FairyGUI.GButton
+    public partial class GameObjectComponent : FairyGUI.GComponent
     {
-        public const string URL = "ui://gb2fsa1xun9b3";
+        public const string URL = "ui://iehegnf1g9wi0";
         
         private IFUICompEventHandler m_EventHandler;
 
         #region [子节点]
-       
-        public FairyGUI.GTextField Title;
-  
+ 
         public FairyGUI.GGraph Graph;
-   
+ 
         #endregion
 
         #region [控制器]
- 
-        public FairyGUI.Controller ButtonController;
 
-        public enum ButtonControllerPage
-        { 
-            PageUp,
-            PageDown,
-            PageOver,
-            PageSelectedOver,
-        }
-
-        public ButtonControllerPage CurrentButtonControllerPage
-        {
-            get => (ButtonControllerPage)ButtonController.selectedIndex;
-            set => ButtonController.selectedIndex = (int)value;
-        }
- 
         #endregion
 
         #region [动效]
@@ -56,24 +38,20 @@ namespace ET.Client.Login
             base.ConstructFromXML(xml);
 
             #region [子节点]
-       
-            Title = (FairyGUI.GTextField)GetChildAt(3);
-  
-            Graph = (FairyGUI.GGraph)GetChildAt(4);
-   
+ 
+            Graph = (FairyGUI.GGraph)GetChildAt(0);
+ 
             #endregion
 
             #region [控制器]
- 
-            ButtonController = GetControllerAt(0);
- 
+
             #endregion
 
             #region [动效]
 
             #endregion
 
-            m_EventHandler = FUICompEventComponent.Instance.CreateCompEventHandler(typeof(SpecialButton));
+            m_EventHandler = FUICompEventComponent.Instance.CreateCompEventHandler(typeof(GameObjectComponent));
             m_EventHandler?.Initialize(this);
         }
 

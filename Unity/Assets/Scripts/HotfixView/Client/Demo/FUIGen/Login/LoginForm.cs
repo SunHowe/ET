@@ -6,8 +6,52 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using FairyGUI;
+
 namespace ET.Client
 {
+    [EntitySystemOf(typeof(LoginForm))]
+    [FriendOf(typeof(LoginForm))]
+    public static partial class LoginFormSystem
+    {
+		[EntitySystem]
+        public static void Awake(this LoginForm self)
+        {
+            FUI fui = self.GetParent<FUI>();
+            GComponent contentPane = fui.ContentPane;
+
+            #region [子节点]
+     
+            self.BtnLogin = (FairyGUI.GButton)contentPane.GetChildAt(2);
+    
+            self.InputAccount = (FairyGUI.GTextInput)contentPane.GetChildAt(4);
+  
+            self.InputPassword = (FairyGUI.GTextInput)contentPane.GetChildAt(5);
+  
+            self.ComDemo = (ET.Client.Login.DemoComponent)contentPane.GetChildAt(6);
+  
+            self.BtnSpecial = (ET.Client.Login.SpecialButton)contentPane.GetChildAt(7);
+ 
+            #endregion
+
+            #region [控制器]
+
+            #endregion
+
+            #region [动效]
+
+            #endregion
+
+            self.OnCreate(fui, contentPane);
+        }
+
+        [EntitySystem]
+        public static void Destroy(this LoginForm self)
+        {
+            self.OnDestroy();
+        }
+    }
+
     [FUIEvent(FUIViewId.LoginForm)]
     public partial class LoginFormEventHandler : AFUIEventHandler<LoginForm>
     {

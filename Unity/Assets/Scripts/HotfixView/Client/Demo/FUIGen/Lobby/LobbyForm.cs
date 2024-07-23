@@ -43,4 +43,45 @@ namespace ET.Client
             self.OnDestroy();
         }
     }
+
+    [FUIEvent(FUIViewId.LobbyForm)]
+    public partial class LobbyFormEventHandler : AFUIEventHandler<LobbyForm>
+    {
+        public override string UIAssetURL => LobbyForm.URL;
+
+        protected override void OnOpen(FUI ui, LobbyForm component, object userData)
+        {
+            component.OnOpen(ui, userData);
+        }
+
+        protected override void OnClose(FUI ui, LobbyForm component)
+        {
+            component.OnClose(ui);
+        }
+
+        protected override void OnPause(FUI ui, LobbyForm component)
+        {
+            component.OnPause(ui);
+        }
+
+        protected override void OnResume(FUI ui, LobbyForm component)
+        {
+            component.OnResume(ui);
+        }
+
+        protected override void OnCover(FUI ui, LobbyForm component)
+        {
+            component.OnCover(ui);
+        }
+
+        protected override void OnReveal(FUI ui, LobbyForm component)
+        {
+            component.OnReveal(ui);
+        }
+
+        protected override void OnRefocus(FUI ui, LobbyForm component, object userData)
+        {
+            component.OnRefocus(ui, userData);
+        }
+    }
 }

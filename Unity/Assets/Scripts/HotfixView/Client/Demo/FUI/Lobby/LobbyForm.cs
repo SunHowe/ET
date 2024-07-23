@@ -16,7 +16,7 @@ namespace ET.Client
             self.BtnEnter.onClick.Remove(self.OnEnter);
         }
 
-		public static void OnOpen(this LobbyForm self, FUI ui, object userData)
+        public static void OnOpen(this LobbyForm self, FUI ui, object userData)
         {
         }
 

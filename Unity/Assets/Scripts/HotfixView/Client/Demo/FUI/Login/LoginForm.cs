@@ -16,7 +16,7 @@ namespace ET.Client
             self.BtnLogin.onClick.Remove(self.OnLogin);
         }
 
-		public static void OnOpen(this LoginForm self, FUI ui, object userData)
+        public static void OnOpen(this LoginForm self, FUI ui, object userData)
         {
         }
 

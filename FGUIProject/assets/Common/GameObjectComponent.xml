@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="100,100" pivot="0.5,0.5">
+  <displayList>
+    <graph id="n0_usqu" name="graph" xy="0,0" size="100,100" type="rect" lineSize="0" fillColor="#7fffffff">
+      <relation target="" sidePair="width-width,height-height"/>
+    </graph>
+  </displayList>
+</component>

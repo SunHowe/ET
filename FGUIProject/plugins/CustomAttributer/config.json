@@ -1,0 +1,100 @@
+{
+    "remote": "",
+    "inspectors": [
+        {
+            "title": "GameObjectComponent属性设置",
+            "parent": false,
+            "pattern": "*",
+            "componentTypeLimit": ["ui://iehegnf1g9wi0"],
+            "mode": 1,
+            "components": [
+                {
+                    "type": "ComboBox",
+                    "name": "缩放模式",
+                    "key": "GO_ResizeMode",
+                    "id": 4001,
+                    "value": 0,
+                    "data": {
+                        "items": [
+                            "不缩放",
+                            "自由缩放",
+                            "等比缩放(适应宽度)",
+                            "等比缩放(适应高度)",
+                            "等比缩放(显示全部)",
+                            "等比缩放(无边框)"
+                        ],
+                        "values": [
+                            "不缩放",
+                            "自由缩放",
+                            "等比缩放(适应宽度)",
+                            "等比缩放(适应高度)",
+                            "等比缩放(显示全部)",
+                            "等比缩放(无边框)"
+                        ]
+                    }
+                },
+                {
+                    "type": "Switch",
+                    "name": "基准尺寸",
+                    "key": "GO_ResizeWithInitSize",
+                    "id": 4002,
+                    "value": false
+                },
+                {
+                    "type": "ComboBox",
+                    "name": "对象池",
+                    "key": "GO_ObjectPoolType",
+                    "id": 4003,
+                    "value": 0,
+                    "data": {
+                        "items": [
+                            "界面",
+                            "全局"
+                        ],
+                        "values": [
+                            "界面",
+                            "全局"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "title": "GameObjectComponent自动加载设置",
+            "parent": false,
+            "pattern": "*",
+            "componentTypeLimit": ["ui://iehegnf1g9wi0"],
+            "mode": 1,
+            "components": [
+                {
+                    "type": "Textinput",
+                    "name": "资源路径",
+                    "key": "GO_AssetKey",
+                    "id": 5001,
+                    "value": ""
+                },
+                {
+                    "type": "ComboBox",
+                    "name": "渲染器类型",
+                    "key": "GO_RendererType",
+                    "id": 5002,
+                    "value": 1,
+                    "data": {
+                        "items": [
+                            "GoWrapper",
+                            "复制材质球的GoWrapper",
+                            "RenderTexture",
+                            "共享贴图的RenderTexture"
+                        ],
+                        "values": [
+                            "GoWrapper",
+                            "复制材质球的GoWrapper",
+                            "RenderTexture",
+                            "共享贴图的RenderTexture"
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

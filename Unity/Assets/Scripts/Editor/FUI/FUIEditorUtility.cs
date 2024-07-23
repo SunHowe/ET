@@ -171,14 +171,16 @@ namespace ET
                     case UIComponentExportType.UIForm:
                         templatePath = ScribanTemplateRoot + "/FUIForm.Model.Logic.tpl";
                         outputPath = FUIModelLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                        return true;
+                        break;
                     case UIComponentExportType.UIComponent:
                         templatePath = ScribanTemplateRoot + "/FUIComponent.Model.Logic.tpl";
                         outputPath = FUIModelLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                        return true;
+                        break;
                     default:
                         return false;
                 }
+
+                return !File.Exists(outputPath);
             }
 
             private static bool GetFUIHotfixGenCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
@@ -213,14 +215,16 @@ namespace ET
                     case UIComponentExportType.UIForm:
                         templatePath = ScribanTemplateRoot + "/FUIForm.Hotfix.Logic.tpl";
                         outputPath = FUIHotfixLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                        return true;
+                        break;
                     case UIComponentExportType.UIComponent:
                         templatePath = ScribanTemplateRoot + "/FUIComponent.Hotfix.Logic.tpl";
                         outputPath = FUIHotfixLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                        return true;
+                        break;
                     default:
                         return false;
                 }
+
+                return !File.Exists(outputPath);
             }
 
             private static string GetFUIViewEnumName(UIComponent component)

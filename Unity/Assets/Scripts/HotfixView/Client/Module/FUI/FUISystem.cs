@@ -15,6 +15,7 @@ namespace ET.Client
             self.ContentPane = contentPane;
             self.EventHandler = eventHandler;
             self.AddComponent(eventHandler.ComponentType);
+            self.AddComponent<ResourcesLoaderComponent>(); // 组件的加载器
         }
 
         [EntitySystem]

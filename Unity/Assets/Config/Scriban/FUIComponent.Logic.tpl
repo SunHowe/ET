@@ -15,4 +15,12 @@ namespace ET.Client.{{ package_name }}
         {
         }
     }
+
+    public static partial class {{ name }}System
+    {
+        public static {{ name }}Logic GetCompLogic(this {{ name }} self)
+        {
+            return ({{ name }}Logic)self.CompLogic;
+        }
+    }
 }

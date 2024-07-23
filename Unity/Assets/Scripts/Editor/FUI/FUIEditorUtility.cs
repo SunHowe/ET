@@ -26,10 +26,14 @@ namespace ET
 
             private const string ScribanTemplateRoot = "Assets/Config/Scriban";
             
-            private const string FUIBindingGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
+            private const string FUIBindingGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUIGen";
+            private const string FUIPartialGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
+            
             private const string FUISystemBindingGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
             private const string FUISystemLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
+            
             private const string FUICompLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
+            
             private const string FUIEnumFilePath = "Assets/Scripts/ModelView/Client/Module/FUI/FUIViewId.cs";
 
             private const string UINamespace = "ET.Client";
@@ -81,6 +85,16 @@ namespace ET
                 
                 UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIBindingCodeExportSettings), filter);
                 UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICustomComponentBindingCodeExportSettings), filter);
+
+                #endregion
+
+                #region [生成FUI Partial类代码]
+
+                // 只生成一次
+                if (!Directory.Exists(FUIPartialGenerateRoot))
+                    Directory.CreateDirectory(FUIPartialGenerateRoot);
+                
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIPartialCodeExportSettings), filter);
 
                 #endregion
 
@@ -156,6 +170,28 @@ namespace ET
                 // 只生成UIForm代码
                 templatePath = ScribanTemplateRoot + "/FUI.Binding.tpl";
                 outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                return true;
+            }
+
+            private static bool GetFUIPartialCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            {
+                templatePath = string.Empty;
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                switch (exportType)
+                {
+                    case UIComponentExportType.UIForm:
+                        templatePath = ScribanTemplateRoot + "/FUI.Partial.tpl";
+                        break;
+                    case UIComponentExportType.UIComponent:
+                        templatePath = ScribanTemplateRoot + "/FUIComponent.Partial.tpl";
+                        break;
+                    default:
+                        return false;
+                }
+                
+                outputPath = FUIPartialGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
                 return true;
             }
 

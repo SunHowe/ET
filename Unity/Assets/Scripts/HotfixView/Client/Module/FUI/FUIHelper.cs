@@ -1,4 +1,6 @@
-﻿namespace ET.Client
+﻿using FairyGUI;
+
+namespace ET.Client
 {
     public static class FUIHelper
     {
@@ -91,6 +93,37 @@
         {
             scene.Root().GetComponent<FUIComponent>().UnloadAllUnusedAssets();
             await ETTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 获取UI实例所属的FUIForm
+        /// </summary>
+        public static FUIForm GetFUIForm(this GObject gObject)
+        {
+            if (gObject == null)
+            {
+                return null;
+            }
+
+            GComponent parent = gObject.parent;
+
+            while (parent != null)
+            {
+                if (parent is FUIForm fuiForm)
+                    return fuiForm;
+                
+                parent = parent.parent;
+            }
+            
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取UI实例所属的FUIForm实体
+        /// </summary>
+        public static FUI GetFUIFormEntity(this GObject gObject)
+        {
+            return gObject.GetFUIForm()?.Entity;
         }
     }
 }

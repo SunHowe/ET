@@ -54,6 +54,24 @@
             scene.Root().GetComponent<FUIComponent>().CloseAllUI(includeOpening);
             await ETTask.CompletedTask;
         }
+
+        /// <summary>
+        /// 关闭UI
+        /// </summary>
+        [EnableAccessEntiyChild]
+        public static ETTask RemoveUI(this Scene scene, FUIViewId viewId, bool includeOpening = true)
+        {
+            return scene.CloseUI(viewId, includeOpening);
+        }
+        
+        /// <summary>
+        /// 关闭所有UI
+        /// </summary>
+        [EnableAccessEntiyChild]
+        public static ETTask RemoveAllUI(this Scene scene, bool includeOpening = true)
+        {
+            return scene.CloseAllUI(includeOpening);
+        }
         
         /// <summary>
         /// 销毁已关闭的UI

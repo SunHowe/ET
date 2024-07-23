@@ -8,6 +8,7 @@
 
 using System;
 using System.Threading;
+using FairyGUI.Utils;
 
 namespace ET.Client.Login
 {
@@ -15,6 +16,11 @@ namespace ET.Client.Login
     public partial class SpecialButton : FairyGUI.GButton
     {
         public const string URL = "ui://gb2fsa1xun9b3";
+
+        /// <summary>
+        /// 组件逻辑
+        /// </summary>
+        public IFUICompLogic CompLogic { get; private set; }
 
         #region [子节点]
        
@@ -69,6 +75,22 @@ namespace ET.Client.Login
             #region [动效]
 
             #endregion
+
+            CompLogic = FUICompLogicComponent.Instance.CreateCompLogic(typeof(SpecialButton));
+            CompLogic?.Initialize(this);
+        }
+
+        public override void Dispose()
+        {
+            CompLogic?.Dispose();
+            CompLogic = null;
+            base.Dispose();
+        }
+
+        public override void Setup_AfterAdd(ByteBuffer buffer, int beginPos)
+        {
+            base.Setup_AfterAdd(buffer, beginPos);
+            CompLogic?.SetupAfterAdd();
         }
     }
 }

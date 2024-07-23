@@ -12,6 +12,8 @@ namespace ET.Client
         [EntitySystem]
         private static void Awake(this FUIComponent self, string uiAssetKeyPrefix, string uiMappingAssetKey)
         {
+            Type fuiFormType = typeof(FUIForm);
+            
             var uiEvents = CodeTypes.Instance.GetTypes(typeof(FUIEventAttribute));
             foreach (Type type in uiEvents)
             {
@@ -24,6 +26,9 @@ namespace ET.Client
                 FUIEventAttribute uiEventAttribute = attrs[0] as FUIEventAttribute;
                 IFUIEventHandler aUIEvent = Activator.CreateInstance(type) as IFUIEventHandler;
                 self.EventHandlers.Add(uiEventAttribute.ViewId, aUIEvent);
+                
+                // 将界面注册到FUIForm实例
+                UIObjectFactory.SetPackageItemExtension(aUIEvent.UIAssetURL, fuiFormType);
             }
             
             var uiCustomComponents = CodeTypes.Instance.GetTypes(typeof(FUICustomComponentAttribute));
@@ -254,17 +259,17 @@ namespace ET.Client
                 return null;
             }
             
-            GComponent gComponent = gObject.asCom;
-            if (gComponent == null)
+            FUIForm fuiForm = gObject as FUIForm;
+            if (fuiForm == null)
             {
-                Log.Error($"UI实例类型不是组件: {viewId}");
+                Log.Error($"UI实例类型不是FUIForm: {viewId}");
                 gObject.Dispose();
                 return null;
             }
 
             try
             {
-                FUI fui = self.AddChild<FUI, FUIViewId, GComponent, IFUIEventHandler>(viewId, gComponent, eventHandler);
+                FUI fui = self.AddChild<FUI, FUIViewId, FUIForm, IFUIEventHandler>(viewId, fuiForm, eventHandler);
                 self.UIDict.Add(viewId, fui);
                 return fui;
             }

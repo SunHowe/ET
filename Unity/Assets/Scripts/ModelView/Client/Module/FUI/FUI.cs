@@ -1,13 +1,11 @@
-﻿using FairyGUI;
-
-namespace ET.Client
+﻿namespace ET.Client
 {
     [ChildOf]
-    public sealed class FUI : Entity, IAwake<FUIViewId, GComponent, IFUIEventHandler>, IDestroy
+    public sealed class FUI : Entity, IAwake<FUIViewId, FUIForm, IFUIEventHandler>, IDestroy
     {
         #region [框架处理的属性]
         public FUIViewId ViewId { get; set; }
-        public GComponent ContentPane { get; set; }
+        public FUIForm ContentPane { get; set; }
         public IFUIEventHandler EventHandler { get; set; }
         #endregion
 

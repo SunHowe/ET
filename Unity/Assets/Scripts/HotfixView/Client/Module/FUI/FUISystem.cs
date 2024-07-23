@@ -7,8 +7,10 @@ namespace ET.Client
     public static partial class FUISystem
     {
         [EntitySystem]
-        private static void Awake(this FUI self, FUIViewId viewId, GComponent contentPane, IFUIEventHandler eventHandler)
+        private static void Awake(this FUI self, FUIViewId viewId, FUIForm contentPane, IFUIEventHandler eventHandler)
         {
+            contentPane.EntityRef = self;
+            
             self.ViewId = viewId;
             self.ContentPane = contentPane;
             self.EventHandler = eventHandler;

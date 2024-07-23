@@ -52,11 +52,12 @@ namespace ET.Client
         private static void Destroy(this FUIComponent self)
         {
             UIObjectFactory.Clear();
-            
-            if (self.UIAssetManager == null)
-                return;
-            
-            self.UIAssetManager.Dispose();
+
+            if (self.UIAssetManager != null)
+            {
+                self.UIAssetManager.Dispose();
+                self.UIAssetManager = null;
+            }
         }
 
         /// <summary>

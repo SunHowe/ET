@@ -6,11 +6,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using FairyGUI;
+
 namespace ET.Client
 {
-    public enum FUIViewId
+    [ComponentOf(typeof(FUI))]
+    public partial class LobbyForm : Entity, IAwake, IDestroy
     {
-        LobbyForm = 1,
-        LoginForm = 2,
+        public const string URL = "ui://if1undtbg9wi0";
+
+        #region [子节点]
+ 
+        public FairyGUI.GButton BtnEnter { get; set; }
+ 
+        #endregion
+
+        #region [控制器]
+
+        #endregion
+
+        #region [动效]
+
+        #endregion
     }
 }

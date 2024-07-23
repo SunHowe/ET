@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="if1undtb">
+  <resources>
+    <component id="g9wi0" name="LobbyForm.xml" path="/" exported="true"/>
+    <component id="g9wi1" name="Button.xml" path="/"/>
+  </resources>
+  <publish name=""/>
+</packageDescription>

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Assets/Bundles/FUI/UIPackageMapping.asset
   m_EditorClassIdentifier: 
   PackageIds:
+  - if1undtb
   - gb2fsa1x
   PackageNames:
+  - Lobby
   - Login

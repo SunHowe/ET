@@ -13,6 +13,7 @@ namespace ET.Client
         
         private static void OnDestroy(this LoginForm self)
         {
+            self.BtnLogin.onClick.Remove(self.OnLogin);
         }
 
 		public static void OnOpen(this LoginForm self, FUI ui, object userData)

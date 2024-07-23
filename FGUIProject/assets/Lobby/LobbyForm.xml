@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="800,600">
+  <displayList>
+    <component id="n0_g9wi" name="btnEnter" src="g9wi1" fileName="Button.xml" xy="300,280">
+      <relation target="" sidePair="center-center,middle-middle"/>
+      <Button title="Enter"/>
+    </component>
+  </displayList>
+</component>

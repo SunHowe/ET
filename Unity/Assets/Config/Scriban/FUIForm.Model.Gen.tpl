@@ -43,5 +43,10 @@ namespace ET.Client
         public FairyGUI.Transition {{ upper_first transition.name }}Transition { get; set; }
 {{ end }} {{ end }}
         #endregion
+        
+        /// <summary>
+        /// 界面持有的CancellationToken 它会在界面被关闭时设置为取消
+        /// </summary>
+        public ETCancellationToken CancellationToken => this.GetParent<FUI>()?.CancellationToken;
     }
 }

@@ -320,6 +320,8 @@ namespace ET.Client
 
             // 关闭UI
             fui.OnClose();
+            fui.CancellationTokenSource?.Cancel();
+            fui.CancellationTokenSource = null;
             uiGroup.RemoveUI(fui);
             uiGroup.Refresh();
         }

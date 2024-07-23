@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component size="150,150">
   <displayList>
-    <component id="n3_g9wi" name="n3" src="g9wi0" fileName="GameObjectComponent.xml" pkg="iehegnf1" xy="0,0" size="150,150" customData="{&quot;GO_ResizeMode&quot;:1,&quot;GO_ResizeWithInitSize&quot;:true}">
+    <component id="n3_g9wi" name="n3" src="g9wi0" fileName="GameObjectComponent.xml" pkg="iehegnf1" xy="0,0" pivot="0.5,1" size="150,150" customData="{&quot;GO_ResizeMode&quot;:1,&quot;GO_ResizeWithInitSize&quot;:true,&quot;GO_AssetKey&quot;:&quot;Assets/Bundles/Unit/Skeleton.prefab&quot;}">
       <relation target="" sidePair="width-width,height-height"/>
     </component>
     <text id="n1_un9b" name="txtLabel1" xy="47,36" size="55,29" fontSize="20" singleLine="true" autoClearText="true" text="文本1">

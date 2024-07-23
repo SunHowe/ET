@@ -8,6 +8,7 @@
 
 using System;
 using System.Threading;
+using FairyGUI.Utils;
 
 namespace ET.Client.{{ package_name }}
 {
@@ -15,6 +16,11 @@ namespace ET.Client.{{ package_name }}
     public partial class {{ name }} : {{ extension_type.full_name }}
     {
         public const string URL = "{{ url }}";
+
+        /// <summary>
+        /// 组件逻辑
+        /// </summary>
+        public IFUICompLogic CompLogic { get; private set; }
 
         #region [子节点]
 {{ for node in nodes }} {{ if is_accept_name node.name }}
@@ -66,6 +72,22 @@ namespace ET.Client.{{ package_name }}
             {{ upper_first transition.name }}Transition = GetTransitionAt({{ transition.index }});
 {{ end }} {{ end }}
             #endregion
+
+            CompLogic = FUICompLogicComponent.Instance.CreateCompLogic(typeof({{ name }}));
+            CompLogic?.Initialize(this);
+        }
+
+        public override void Dispose()
+        {
+            CompLogic?.Dispose();
+            CompLogic = null;
+            base.Dispose();
+        }
+
+        public override void Setup_AfterAdd(ByteBuffer buffer, int beginPos)
+        {
+            base.Setup_AfterAdd(buffer, beginPos);
+            CompLogic?.SetupAfterAdd();
         }
     }
 }

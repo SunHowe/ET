@@ -29,6 +29,7 @@ namespace ET
             private const string FUIBindingGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
             private const string FUISystemBindingGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
             private const string FUISystemLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
+            private const string FUICompLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
             private const string FUIEnumFilePath = "Assets/Scripts/ModelView/Client/Module/FUI/FUIViewId.cs";
 
             private const string UINamespace = "ET.Client";
@@ -106,6 +107,16 @@ namespace ET
 
                 #endregion
 
+                #region [生成FUICompLogic代码]
+
+                // 只生成一次
+                if (!Directory.Exists(FUICompLogicGenerateRoot))
+                    Directory.CreateDirectory(FUICompLogicGenerateRoot);
+
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICompLogicCodeExportSettings), filter);
+
+                #endregion
+
                 #region [生成界面枚举id]
 
                 if (File.Exists(FUIEnumFilePath))
@@ -158,7 +169,7 @@ namespace ET
                     return false;
                 
                 // 只生成UIForm代码
-                templatePath = ScribanTemplateRoot + "/UIComponent.Binding.tpl";
+                templatePath = ScribanTemplateRoot + "/FUIComponent.Binding.tpl";
                 outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
                 return true;
             }
@@ -211,6 +222,26 @@ namespace ET
                     return false;
                 
                 templatePath = ScribanTemplateRoot + "/FUISystem.tpl";
+                return true;
+            }
+
+            private static bool GetFUICompLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            {
+                templatePath = string.Empty;
+                outputPath = string.Empty;
+                
+                UIComponentExportType exportType = GetExportType(component);
+                if (exportType != UIComponentExportType.UIComponent)
+                    return false;
+                
+                // 只生成UIComponent代码
+                outputPath = FUICompLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + "Logic.cs";
+                
+                // 如果已经存在，则不再生成
+                if (File.Exists(outputPath))
+                    return false;
+                
+                templatePath = ScribanTemplateRoot + "/FUIComponent.Logic.tpl";
                 return true;
             }
 

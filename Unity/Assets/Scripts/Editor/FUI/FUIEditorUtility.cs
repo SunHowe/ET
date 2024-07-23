@@ -26,13 +26,11 @@ namespace ET
 
             private const string ScribanTemplateRoot = "Assets/Config/Scriban";
             
-            private const string FUIBindingGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUIGen";
-            private const string FUIPartialGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
+            private const string FUIModelGenGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUIGen";
+            private const string FUIModelLogicGenerateRoot = "Assets/Scripts/ModelView/Client/Demo/FUI";
             
-            private const string FUISystemBindingGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
-            private const string FUISystemLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
-            
-            private const string FUICompLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
+            private const string FUIHotfixGenGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUIGen";
+            private const string FUIHotfixLogicGenerateRoot = "Assets/Scripts/HotfixView/Client/Demo/FUI";
             
             private const string FUIEnumFilePath = "Assets/Scripts/ModelView/Client/Module/FUI/FUIViewId.cs";
 
@@ -75,62 +73,44 @@ namespace ET
             {
                 UIComponentFilter filter = new UIComponentFilter();
 
-                #region [生成FUI绑定代码]
+                #region [生成Model Gen代码]
 
-                // 每次都删除重建
-                if (Directory.Exists(FUIBindingGenerateRoot))
-                    Directory.Delete(FUIBindingGenerateRoot, true);
-
-                Directory.CreateDirectory(FUIBindingGenerateRoot);
+                if (Directory.Exists(FUIModelGenGenerateRoot))
+                    Directory.Delete(FUIModelGenGenerateRoot, true);
                 
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIBindingCodeExportSettings), filter);
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICustomComponentBindingCodeExportSettings), filter);
-
-                #endregion
-
-                #region [生成FUI Partial类代码]
-
-                // 只生成一次
-                if (!Directory.Exists(FUIPartialGenerateRoot))
-                    Directory.CreateDirectory(FUIPartialGenerateRoot);
+                Directory.CreateDirectory(FUIModelGenGenerateRoot);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIModelGenCodeExportSettings), filter);
                 
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIPartialCodeExportSettings), filter);
+                #endregion
+
+                #region [生成Model Logic代码]
+
+                if (!Directory.Exists(FUIModelLogicGenerateRoot))
+                    Directory.CreateDirectory(FUIModelLogicGenerateRoot);
+
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIModelLogicCodeExportSettings), filter);
 
                 #endregion
 
-                #region [生成FUISystem绑定代码与FUIEventHandler绑定代码]
+                #region [生成Hotfix Gen代码]
 
-                // 每次都删除重建
-                if (Directory.Exists(FUISystemBindingGenerateRoot))
-                    Directory.Delete(FUISystemBindingGenerateRoot, true);
+                if (Directory.Exists(FUIHotfixGenGenerateRoot))
+                    Directory.Delete(FUIHotfixGenGenerateRoot, true);
 
-                Directory.CreateDirectory(FUISystemBindingGenerateRoot);
+                Directory.CreateDirectory(FUIHotfixGenGenerateRoot);
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIHotfixGenCodeExportSettings), filter);
                 
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUISystemBindingCodeExportSettings), filter);
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetEventHandlerBindingCodeExportSettings), filter);
-
                 #endregion
 
-                #region [生成FUISystem逻辑代码]
-
-                // 只生成一次
-                if (!Directory.Exists(FUISystemLogicGenerateRoot))
-                    Directory.CreateDirectory(FUISystemLogicGenerateRoot);
+                #region [生成Hotfix Logic代码]
                 
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUISystemLogicCodeExportSettings), filter);
+                if (!Directory.Exists(FUIHotfixLogicGenerateRoot))
+                    Directory.CreateDirectory(FUIHotfixLogicGenerateRoot);
+
+                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUIHotfixLogicCodeExportSettings), filter);
 
                 #endregion
-
-                #region [生成FUICompLogic代码]
-
-                // 只生成一次
-                if (!Directory.Exists(FUICompLogicGenerateRoot))
-                    Directory.CreateDirectory(FUICompLogicGenerateRoot);
-
-                UICodeGenerator.Generate(UIAssetsRoot, "_fui.bytes", new ScribanCodeGenerator(GetFUICompLogicCodeExportSettings), filter);
-
-                #endregion
-
+                
                 #region [生成界面枚举id]
 
                 if (File.Exists(FUIEnumFilePath))
@@ -158,22 +138,7 @@ namespace ET
                 }
             }
 
-            private static bool GetFUIBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
-            {
-                templatePath = string.Empty;
-                outputPath = string.Empty;
-                
-                UIComponentExportType exportType = GetExportType(component);
-                if (exportType != UIComponentExportType.UIForm)
-                    return false;
-                
-                // 只生成UIForm代码
-                templatePath = ScribanTemplateRoot + "/FUI.Binding.tpl";
-                outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                return true;
-            }
-
-            private static bool GetFUIPartialCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUIModelGenCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
@@ -182,103 +147,80 @@ namespace ET
                 switch (exportType)
                 {
                     case UIComponentExportType.UIForm:
-                        templatePath = ScribanTemplateRoot + "/FUI.Partial.tpl";
-                        break;
+                        templatePath = ScribanTemplateRoot + "/FUIForm.Model.Gen.tpl";
+                        outputPath = FUIModelGenGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
                     case UIComponentExportType.UIComponent:
-                        templatePath = ScribanTemplateRoot + "/FUIComponent.Partial.tpl";
-                        break;
+                        templatePath = ScribanTemplateRoot + "/FUIComponent.Model.Gen.tpl";
+                        outputPath = FUIModelGenGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
                     default:
                         return false;
                 }
-                
-                outputPath = FUIPartialGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                return true;
             }
 
-            private static bool GetFUICustomComponentBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUIModelLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
                 
                 UIComponentExportType exportType = GetExportType(component);
-                if (exportType != UIComponentExportType.UIComponent)
-                    return false;
-                
-                // 只生成UIForm代码
-                templatePath = ScribanTemplateRoot + "/FUIComponent.Binding.tpl";
-                outputPath = FUIBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
-                return true;
+
+                switch (exportType)
+                {
+                    case UIComponentExportType.UIForm:
+                        templatePath = ScribanTemplateRoot + "/FUIForm.Model.Logic.tpl";
+                        outputPath = FUIModelLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
+                    case UIComponentExportType.UIComponent:
+                        templatePath = ScribanTemplateRoot + "/FUIComponent.Model.Logic.tpl";
+                        outputPath = FUIModelLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
+                    default:
+                        return false;
+                }
             }
 
-            private static bool GetFUISystemBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUIHotfixGenCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
                 
                 UIComponentExportType exportType = GetExportType(component);
-                if (exportType != UIComponentExportType.UIForm)
-                    return false;
-                
-                // 只生成UIFormSystem代码
-                templatePath = ScribanTemplateRoot + "/FUISystem.Binding.tpl";
-                outputPath = FUISystemBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + "System.cs";
-                return true;
+                switch (exportType)
+                {
+                    case UIComponentExportType.UIForm:
+                        templatePath = ScribanTemplateRoot + "/FUIForm.Hotfix.Gen.tpl";
+                        outputPath = FUIHotfixGenGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
+                    case UIComponentExportType.UIComponent:
+                        templatePath = ScribanTemplateRoot + "/FUIComponent.Hotfix.Gen.tpl";
+                        outputPath = FUIHotfixGenGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
+                    default:
+                        return false;
+                }
             }
 
-            private static bool GetEventHandlerBindingCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
+            private static bool GetFUIHotfixLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
             {
                 templatePath = string.Empty;
                 outputPath = string.Empty;
                 
                 UIComponentExportType exportType = GetExportType(component);
-                if (exportType != UIComponentExportType.UIForm)
-                    return false;
-                
-                // 只生成EventHandler代码
-                outputPath = FUISystemBindingGenerateRoot + "/" + component.PackageName + "/" + component.Name + "EventHandler.cs";
-                templatePath = ScribanTemplateRoot + "/FUIEventHandler.Binding.tpl";
-                
-                return true;
-            }
-
-            private static bool GetFUISystemLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
-            {
-                templatePath = string.Empty;
-                outputPath = string.Empty;
-                
-                UIComponentExportType exportType = GetExportType(component);
-                if (exportType != UIComponentExportType.UIForm)
-                    return false;
-                
-                // 只生成UIFormSystem代码
-                outputPath = FUISystemLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + "System.cs";
-                
-                // 如果已经存在，则不再生成
-                if (File.Exists(outputPath))
-                    return false;
-                
-                templatePath = ScribanTemplateRoot + "/FUISystem.tpl";
-                return true;
-            }
-
-            private static bool GetFUICompLogicCodeExportSettings(UIComponent component, out string templatePath, out string outputPath)
-            {
-                templatePath = string.Empty;
-                outputPath = string.Empty;
-                
-                UIComponentExportType exportType = GetExportType(component);
-                if (exportType != UIComponentExportType.UIComponent)
-                    return false;
-                
-                // 只生成UIComponent代码
-                outputPath = FUICompLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + "Logic.cs";
-                
-                // 如果已经存在，则不再生成
-                if (File.Exists(outputPath))
-                    return false;
-                
-                templatePath = ScribanTemplateRoot + "/FUIComponent.Logic.tpl";
-                return true;
+                switch (exportType)
+                {
+                    case UIComponentExportType.UIForm:
+                        templatePath = ScribanTemplateRoot + "/FUIForm.Hotfix.Logic.tpl";
+                        outputPath = FUIHotfixLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
+                    case UIComponentExportType.UIComponent:
+                        templatePath = ScribanTemplateRoot + "/FUIComponent.Hotfix.Logic.tpl";
+                        outputPath = FUIHotfixLogicGenerateRoot + "/" + component.PackageName + "/" + component.Name + ".cs";
+                        return true;
+                    default:
+                        return false;
+                }
             }
 
             private static string GetFUIViewEnumName(UIComponent component)

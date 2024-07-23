@@ -47,4 +47,45 @@ namespace ET.Client
             self.OnDestroy();
         }
     }
+
+    [FUIEvent(FUIViewId.{{ name }})]
+    public partial class {{ name }}EventHandler : AFUIEventHandler<{{ name }}>
+    {
+        public override string UIAssetURL => {{ name }}.URL;
+
+        protected override void OnOpen(FUI ui, {{ name }} component, object userData)
+        {
+            component.OnOpen(ui, userData);
+        }
+
+        protected override void OnClose(FUI ui, {{ name }} component)
+        {
+            component.OnClose(ui);
+        }
+
+        protected override void OnPause(FUI ui, {{ name }} component)
+        {
+            component.OnPause(ui);
+        }
+
+        protected override void OnResume(FUI ui, {{ name }} component)
+        {
+            component.OnResume(ui);
+        }
+
+        protected override void OnCover(FUI ui, {{ name }} component)
+        {
+            component.OnCover(ui);
+        }
+
+        protected override void OnReveal(FUI ui, {{ name }} component)
+        {
+            component.OnReveal(ui);
+        }
+
+        protected override void OnRefocus(FUI ui, {{ name }} component, object userData)
+        {
+            component.OnRefocus(ui, userData);
+        }
+    }
 }

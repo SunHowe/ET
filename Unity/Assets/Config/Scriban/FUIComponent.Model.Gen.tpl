@@ -16,11 +16,8 @@ namespace ET.Client.{{ package_name }}
     public partial class {{ name }} : {{ extension_type.full_name }}
     {
         public const string URL = "{{ url }}";
-
-        /// <summary>
-        /// 组件逻辑
-        /// </summary>
-        public IFUICompLogic CompLogic { get; private set; }
+        
+        private IFUICompEventHandler m_EventHandler;
 
         #region [子节点]
 {{ for node in nodes }} {{ if is_accept_name node.name }}
@@ -73,21 +70,15 @@ namespace ET.Client.{{ package_name }}
 {{ end }} {{ end }}
             #endregion
 
-            CompLogic = FUICompLogicComponent.Instance.CreateCompLogic(typeof({{ name }}));
-            CompLogic?.Initialize(this);
+            m_EventHandler = FUICompEventComponent.Instance.CreateCompEventHandler(typeof({{ name }}));
+            m_EventHandler?.Initialize(this);
         }
 
         public override void Dispose()
         {
-            CompLogic?.Dispose();
-            CompLogic = null;
+            m_EventHandler?.Dispose();
+            m_EventHandler = null;
             base.Dispose();
-        }
-
-        public override void Setup_AfterAdd(ByteBuffer buffer, int beginPos)
-        {
-            base.Setup_AfterAdd(buffer, beginPos);
-            CompLogic?.SetupAfterAdd();
         }
     }
 }

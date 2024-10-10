@@ -113,6 +113,9 @@ namespace ET
 
         private readonly Dictionary<long, Action<byte>> routerAckCallback = new();
 
+        // mtu max: 1400
+        private readonly byte[] kcpBuffer = new byte[KCPBASIC.REVERSED_HEAD + (1400 + KCPBASIC.OVERHEAD) * 3];
+
         public void AddRouterAckCallback(long id, Action<byte> action)
         {
             this.routerAckCallback.Add(id, action);
@@ -250,7 +253,7 @@ namespace ET
                                 buffer.WriteTo(0, KcpProtocalType.RouterReconnectACK);
                                 buffer.WriteTo(1, kChannel.LocalConn);
                                 buffer.WriteTo(5, kChannel.RemoteConn);
-                                this.Transport.Send(buffer, 0, 9, this.ipEndPoint);
+                                this.Transport.Send(buffer, 0, 9, this.ipEndPoint, ChannelType.Accept);
                             }
                             catch (Exception e)
                             {
@@ -318,7 +321,7 @@ namespace ET
                                 buffer.WriteTo(5, kChannel.RemoteConn);
                                 Log.Info($"kservice syn: {kChannel.Id} {remoteConn} {localConn} {kChannel.RemoteAddress}");
                                 
-                                this.Transport.Send(buffer, 0, 9, kChannel.RemoteAddress);
+                                this.Transport.Send(buffer, 0, 9, kChannel.RemoteAddress, ChannelType.Accept);
                             }
                             catch (Exception e)
                             {
@@ -479,7 +482,7 @@ namespace ET
                 buffer.WriteTo(9, (uint) error);
                 for (int i = 0; i < times; ++i)
                 {
-                    this.Transport.Send(buffer, 0, 13, address);
+                    this.Transport.Send(buffer, 0, 13, address, ChannelType.Accept);
                 }
             }
             catch (Exception e)
@@ -564,7 +567,7 @@ namespace ET
                     continue;
                 }
 
-                kChannel.Update(timeNow);
+                kChannel.Update(timeNow, this.kcpBuffer);
             }
             this.updateIds.Clear();
         }

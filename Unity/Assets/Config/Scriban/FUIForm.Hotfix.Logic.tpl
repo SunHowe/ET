@@ -6,6 +6,8 @@ namespace ET.Client
     {
         private static void OnCreate(this {{ name }} self, FUI ui, GComponent contentPane)
         {
+            ui.AddComponent<FUIFullScreenComponent>();
+            ui.AddComponent<FUIMainFormComponent>();
         }
         
         private static void OnDestroy(this {{ name }} self)

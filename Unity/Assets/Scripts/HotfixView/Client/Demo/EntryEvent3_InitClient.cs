@@ -10,6 +10,8 @@ namespace ET.Client
     {
         protected override async ETTask Run(Scene root, EntryEvent3 args)
         {
+            FUIConfig.EnableBlurMaskLayer = true;
+            
             GlobalComponent globalComponent = root.AddComponent<GlobalComponent>();
             root.AddComponent<ResourcesLoaderComponent>();
             root.AddComponent<FUIComponent, string, string>("Assets/Bundles/FUI/", "Assets/Bundles/FUI/UIPackageMapping.asset");

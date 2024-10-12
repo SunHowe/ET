@@ -51,6 +51,11 @@ namespace ET.Client
         /// 界面激活
         /// </summary>
         void OnRefocus(FUI ui, object userData);
+
+        /// <summary>
+        /// 界面所属的遮罩层被点击
+        /// </summary>
+        void OnMaskLayerClicked(FUI ui);
     }
 
     public abstract class AFUIEventHandler<T> : HandlerObject, IFUIEventHandler where T : Entity
@@ -93,6 +98,11 @@ namespace ET.Client
             OnRefocus(ui, ui.GetComponent<T>(), userData);
         }
 
+        public void OnMaskLayerClicked(FUI ui)
+        {
+            OnMaskLayerClicked(ui, ui.GetComponent<T>());
+        }
+
         protected abstract void OnOpen(FUI ui, T component, object userData);
         protected abstract void OnClose(FUI ui, T component);
         protected abstract void OnPause(FUI ui, T component);
@@ -100,5 +110,6 @@ namespace ET.Client
         protected abstract void OnCover(FUI ui, T component);
         protected abstract void OnReveal(FUI ui, T component);
         protected abstract void OnRefocus(FUI ui, T component, object userData);
+        protected abstract void OnMaskLayerClicked(FUI ui, T component);
     }
 }

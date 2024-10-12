@@ -25,11 +25,20 @@ namespace ET.Client
         }
 
         /// <summary>
+        /// 关闭当前界面
+        /// </summary>
+        public static void CloseForm(this FUI self)
+        {
+            self.Root().CloseUI(self.ViewId).Coroutine();
+        }
+
+        /// <summary>
         /// 设置深度
         /// </summary>
         public static void SetDepth(this FUI self, int depth)
         {
-            self.ContentPane.sortingOrder = depth + 1;
+            self.Depth = depth;
+            self.ContentPane.sortingOrder = (self.Depth << 1) + 1;
         }
 
         /// <summary>
@@ -86,6 +95,14 @@ namespace ET.Client
         public static void OnRefocus(this FUI self, object userdata)
         {
             self.EventHandler.OnRefocus(self, userdata);
+        }
+
+        /// <summary>
+        /// 界面所属的遮罩层被点击
+        /// </summary>
+        public static void OnMaskLayerClicked(this FUI self)
+        {
+            self.EventHandler.OnMaskLayerClicked(self);
         }
     }
 }

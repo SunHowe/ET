@@ -41,5 +41,11 @@ namespace ET.Client
         public static void OnRefocus(this {{ name }} self, FUI ui, object userData)
         {
         }
+
+        public static void OnMaskLayerClicked(this {{ name }} self, FUI ui)
+        {
+            // 默认执行关闭当前界面的逻辑
+            ui.CloseForm();
+        }
     }
 }

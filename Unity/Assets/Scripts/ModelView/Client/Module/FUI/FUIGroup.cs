@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using FairyGUI;
+using UnityEngine;
 
 namespace ET.Client
 {
@@ -13,6 +14,9 @@ namespace ET.Client
         public FUIGroupId GroupId { get; set; }
         public LinkedList<FUIInfo> UIs = new();
         public LinkedListNode<FUIInfo> CacheNode;
+        public GComponent MaskLayer { get; set; }
+        public RenderTexture MaskRenderTexture { get; set; }
+        public EntityRef<FUI> PreviousMaskLayerForm { get; set; }
     }
 
     [EnableClass]

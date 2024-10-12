@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FairyGUI;
+using UnityEngine;
 
 namespace ET.Client
 {
@@ -138,7 +139,7 @@ namespace ET.Client
             bool pause = false;
             bool cover = false;
             int depth = self.UIs.Count;
-            FUIInfo maskLayerFUIInfo = null;
+            FUI maskLayerFUI = null;
 
             while (current != null && current.Value != null)
             {
@@ -225,24 +226,124 @@ namespace ET.Client
                         cover = true;
                     }
 
-                    if (maskLayerFUIInfo == null && fui.NeedDisplayMaskLayer)
+                    if (maskLayerFUI == null && fui.NeedDisplayMaskLayer)
                     {
-                        maskLayerFUIInfo = fuiInfo;
+                        maskLayerFUI = fui;
                     }
                 }
 
                 current = next;
             }
 
-            self.SetMaskLayerBelongTo(maskLayerFUIInfo);
+            self.SetMaskLayerBelongTo(maskLayerFUI);
+        }
+        
+        /// <summary>
+        /// 更新遮罩层模糊背景
+        /// </summary>
+        public static void UpdateMaskLayerBlurTexture(this FUIGroup self)
+        {
+            // 未开启功能
+            if (!FUIConfig.EnableBlurMaskLayer)
+                return;
         }
         
         /// <summary>
         /// 设置遮罩层归属
         /// </summary>
-        private static void SetMaskLayerBelongTo(this FUIGroup self, FUIInfo ui)
+        private static void SetMaskLayerBelongTo(this FUIGroup self, FUI ui)
         {
-            // TODO
+            if (ui == null)
+            {
+                self.MaskLayer?.RemoveFromParent();
+                self.PreviousMaskLayerForm = null;
+                return;
+            }
+            
+            // 创建MaskLayer
+            self.CreateMaskLayer();
+
+            FUI previous = self.PreviousMaskLayerForm;
+            bool isDifferent = previous != ui;
+
+            if (isDifferent)
+            {
+                self.PreviousMaskLayerForm = ui;
+                self.UpdateMaskLayerBlurTexture();
+            }
+
+            self.MaskLayer.sortingOrder = ui.Depth << 1;
+            if (self.MaskLayer.parent == null)
+                self.ContentPane.AddChild(self.MaskLayer);
+        }
+
+        /// <summary>
+        /// 创建遮罩层
+        /// </summary>
+        private static void CreateMaskLayer(this FUIGroup self)
+        {
+            if (self.MaskLayer != null)
+                return;
+            
+            int w = (int)self.ContentPane.width;
+            int h = (int)self.ContentPane.height;
+
+            GComponent maskComponent = new GComponent();
+            maskComponent.name = maskComponent.gameObjectName = "MaskLayer";
+            maskComponent.xy = Vector2.zero;
+            maskComponent.SetSize(w, h);
+            maskComponent.AddRelation(self.ContentPane, RelationType.Size);
+            maskComponent.SetHome(self.ContentPane);
+            maskComponent.onClick.Add(self.OnMaskLayerClick);
+
+            // graph
+            GGraph graph = new GGraph();
+            graph.name = graph.gameObjectName = "Graph";
+            graph.DrawRect(w, h, 0, Color.white, UIConfig.modalLayerColor);
+            graph.xy = Vector2.zero;
+            graph.AddRelation(maskComponent, RelationType.Size);
+            maskComponent.AddChild(graph);
+
+            // blur
+            if (FUIConfig.EnableBlurMaskLayer)
+            {
+                int captureWidth = w;
+                int captureHeight = h;
+
+                if (FUIConfig.MaskLayerDownSample > 0)
+                {
+                    captureWidth >>= FUIConfig.MaskLayerDownSample;
+                    captureHeight >>= FUIConfig.MaskLayerDownSample;
+                }
+                
+                self.MaskRenderTexture = RenderTexture.GetTemporary(captureWidth, captureHeight, 0, RenderTextureFormat.RGB565);
+                GImage blurLayer = new GImage();
+                blurLayer.name = blurLayer.gameObjectName = "CaptureScreen";
+                blurLayer.texture = new NTexture(self.MaskRenderTexture);
+                blurLayer.SetSize(w, h);
+                blurLayer.filter = new BlurFilter
+                {
+                    blurSize = FUIConfig.MaskLayerBlurSize,
+                    downSample = 0, // 这里不需要降采样 因为在截图时已经降采样了
+                };
+                blurLayer.xy = Vector2.zero;
+                blurLayer.AddRelation(maskComponent, RelationType.Size);
+                maskComponent.AddChild(blurLayer);
+            }
+
+            self.MaskLayer = maskComponent;
+        }
+
+        /// <summary>
+        /// 遮罩层被点击
+        /// </summary>
+        private static void OnMaskLayerClick(this FUIGroup self)
+        {
+            FUI fui = self.PreviousMaskLayerForm;
+            if (fui == null)
+                return;
+            
+            fui.OnMaskLayerClicked();
         }
 
         /// <summary>

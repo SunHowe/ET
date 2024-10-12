@@ -7,6 +7,7 @@
         public FUIViewId ViewId { get; set; }
         public FUIForm ContentPane { get; set; }
         public IFUIEventHandler EventHandler { get; set; }
+        public int Depth { get; set; }
         #endregion
 
         /// <summary>

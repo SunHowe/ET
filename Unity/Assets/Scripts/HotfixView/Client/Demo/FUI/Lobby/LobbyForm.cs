@@ -44,6 +44,11 @@ namespace ET.Client
         {
         }
 
+        public static void OnMaskLayerClicked(this LobbyForm self, FUI ui)
+        {
+            ui.CloseForm();
+        }
+
         private static void OnEnter(this LobbyForm self)
         {
             self.EnterMap().Coroutine();

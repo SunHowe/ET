@@ -83,5 +83,10 @@ namespace ET.Client
         {
             component.OnRefocus(ui, userData);
         }
+
+        protected override void OnMaskLayerClicked(FUI ui, LobbyForm component)
+        {
+            component.OnMaskLayerClicked(ui);
+        }
     }
 }

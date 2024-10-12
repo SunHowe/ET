@@ -44,6 +44,11 @@ namespace ET.Client
         {
         }
 
+        public static void OnMaskLayerClicked(this LoginForm self, FUI ui)
+        {
+            ui.CloseForm();
+        }
+
         private static void OnLogin(this LoginForm self)
         {
             LoginHelper.Login(self.Root(), self.InputAccount.text, self.InputPassword.text).Coroutine();

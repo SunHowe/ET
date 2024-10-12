@@ -96,6 +96,7 @@ namespace ET.Client
             if (!info.Paused)
             {
                 info.Paused = true;
+                ui.ContentPane.visible = false;
                 ui.OnPause();
             }
 
@@ -171,6 +172,7 @@ namespace ET.Client
                     if (!fuiInfo.Paused)
                     {
                         fuiInfo.Paused = true;
+                        fui.ContentPane.visible = false;
                         fui.OnPause();
                         if (current.Value == null)
                         {
@@ -183,6 +185,7 @@ namespace ET.Client
                     if (fuiInfo.Paused)
                     {
                         fuiInfo.Paused = false;
+                        fui.ContentPane.visible = true;
                         fui.OnResume();
                         if (current.Value == null)
                         {

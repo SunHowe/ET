@@ -154,7 +154,7 @@ namespace ET.Client
                     continue;
                 }
                 
-                fui.SetDepth(depth);
+                fui.SetDepth(depth--);
 
                 if (pause)
                 {
